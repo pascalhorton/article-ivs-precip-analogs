@@ -288,7 +288,7 @@ The optimization of AMs with GAs is implemented in the open source AtmoSwing sof
 
 \subsection{Changes Made to AtmoSwing -- GPU processing}
 
-Despite being a simple method, the AM require many comparisons of gridded fields for its calibration. For example, this work used a 24-years calibration period. For each target day, a gridded predictor needs to be compared to about 2820 candidate situations (on a 120-days temporal window, minus 60 days in the target year). Over the full calibration period, this amounts to about $24.7\cdot10^6$ field comparisons per predictor of the first level of analogy. Here, one optimization required 100-300 generations made of 2000 individuals, which brings the average number of grid comparisons to about $1\cdot10^{13}$ per predictor of the first level of analogy. Using profilers, the comparison of the gridded predictors -- the calculation of the analogy criteria -- was clearly identified as the most time-consuming task, despite the use of the efficient linear algebra library Eigen 3 \cite{Guennebaud2010}.
+Despite being a simple method, the AM require many comparisons of gridded fields for its calibration. For example, this work used a 24-years calibration period. For each target day, a gridded predictor needs to be compared to about 2820 candidate situations (on a 120-days temporal window, minus 60 days in the target year). Over the full calibration period, this amounts to about $24.7\cdot10^6$ field comparisons per predictor of the first level of analogy. Here, one optimization required in average about 200 generations made of 2000 individuals, which brings the average number of grid comparisons to about $1\cdot10^{13}$ per predictor of the first level of analogy. Using profilers, the comparison of the gridded predictors -- the calculation of the analogy criteria -- was clearly identified as the most time-consuming task, despite the use of the efficient linear algebra library Eigen 3 \cite{Guennebaud2010}.
 
 In order to reduce the processing time, computation using graphics processing units (GPUs) was implemented in AtmoSwing v.2.1.2 \cite{Horton2019b}. The calculation of the analogy criteria has thus been written using NVIDIA's CUDA. The different criteria available in AtmoSwing were written as kernels that run on the GPU.
 
@@ -308,6 +308,7 @@ The experiment was conducted on the cluster of the University of Bern, using the
 
 The benchmark (Fig. \ref{cuda}) shows that the calculations on the GPU are systematically faster than those on the CPU, and this difference increases with the number of grid points. The calculations on the GPU were 13 times faster in average, and up to a maximum of 38 times faster (5.2~sec instead of 3.3~min) when using 2048 points. Model outputs and reanalyses show an increase in spatial resolution and thus this will become increasingly important. When using CPU only, the addition of a predictor in the first level of analogy has a much higher impact on time than the addition of a second level of analogy. This is explained by the fact that it needs to process the analogy criteria for the whole archive for each predictor of the first level of analogy, while the second level has only few candidate situations to assess.
 
+%TODO: add comparison with multiple CPUs
 
 \section{Experiment Setup}
 \label{setup}
