@@ -81,7 +81,7 @@
 
 % Example: \title{This is a test title}
 
-\title{Automatic input variable selection with genetic algorithms for precipitation downscaling}
+\title{Automatic input variable selection with genetic algorithms for analog methods}
 
 %% ------------------------------------------------------------------------ %%
 %
@@ -276,11 +276,21 @@ The probabilistic prediction for the target day is then provided by the empirica
 
 \subsection{Genetic Algorithms}
 
-An variant of genetic algorithms (GAs) has been tailored for the optimization of AMs by \citeA{Horton2017a}. All the parameters of the method but the meteorological variables and the analogy criteria could be successfully optimized using GAs \cite{Horton2018a}. The use of GAs provided for the first time an objective and global optimization of AMs, which resulted in gain in prediction skills. To bring the optimization further, the selection of the predictor variables and the analogy criteria were here performed by GAs. 
+A variant of genetic algorithms (GAs) has been tailored for the optimization of AMs by \citeA{Horton2017a}. All the parameters of the method but the meteorological variables and the analogy criteria could already be successfully optimized using GAs \cite{Horton2018a}. The use of GAs provided for the first time an objective and global optimization of AMs, which resulted in gain in prediction skills. To bring the optimization further, the selection of the predictor variables and the analogy criteria were here performed by GAs. 
 
 While the parameters optimized so far have a notion of continuity in the range of their values (e.g. location and size of the spatial windows, or number of analogs), predictor variables or analogy criteria have no relationship among options. They are treated as arrays of independent values in the algorithm and so the operators relying on a search radius in the parameters space \cite{Horton2017a} cannot be applied to them. In addition to the increase in difficulty due to the higher number of parameters to optimize, this aspect is also likely to slow down the optimization.
 
-The mutation operator having the largest impact on the success of the optimization, five variants, as suggested in \citeA{Horton2017a}, were used. Thus, every parameter set was optimized five to seven times with different GAs options.
+The mutation operator was shown to have the largest impact on the success of the optimization \citeA{Horton2017a}. Thus, as suggested in \citeA{Horton2017a}, five variants of this operator were used in parallel optimizations: 
+
+\begin{enumerate}
+	\item Chromosome of adaptive search radius
+	\item Multiscale mutation
+	\item Non-uniform mutation (pmut=0.1, Gmr=50, w=0.1)
+	\item Non-uniform mutation (pmut=0.1, Gmr=100, w=0.1)
+	\item Non-uniform mutation (pmut=0.2, Gmr=100, w=0.1)
+\end{enumerate}
+
+The non-uniform mutation \cite{Michalewicz1996} aims at reducing the magnitude of the search in the parameters space with the evolution of the population in order to transition from exploration of the whole parameters space to exploitation of local solutions. This operator has three controlling parameters, which makes it difficult to control, and for this reason it is present with three different configurations in the selected presets. The multiscale mutation considers both exploration and exploitation in parallel. It has no controlling parameters and present no evolution during the optimization. The chromosome of adaptive search radius was introduced by \citeA{Horton2017a} and is inspired by the non-uniform mutation. However, it takes an auto-adaptive approach by adding two chromosomes, one for the mutation rate, and one for the control of the search magnitude \cite<see details in>{Horton2017a}. It has therefore no controlling parameters and is thus easier to use. 
 
 
 \section{Software}
@@ -288,29 +298,22 @@ The mutation operator having the largest impact on the success of the optimizati
 
 The optimization of AMs with GAs is implemented in the open source AtmoSwing software \cite{Horton2019} that has been used for this work. AtmoSwing is written in object-oriented C++ and has been optimized for speed. It scales well on a HPC infrastructure as the different members of the GAs populations, i.e. the various parameter sets, can be assessed in parallel using different independent threads. However, due to the increasingly large number of assessment needed by GAs with the increasing complexity of the problem, a further reduction in processing time became necessary. 
 
-\subsection{Changes Made to AtmoSwing -- GPU processing}
+A first attempt was based on storing the whole history of the optimization in memory and by looking up for equal -- or similar -- already-assessed parameters to a newly generated parameters set. However, this approach ended up to be even more time consuming after several generations and led to memory issues for long optimizations.
+
+
+
+\subsection{GPU processing}
 
 Despite being a simple method, the AM require many comparisons of gridded fields for its calibration. For example, this work used a 24-years calibration period. For each target day, a gridded predictor needs to be compared to about 2820 candidate situations (on a 120-days temporal window, minus 60 days in the target year). Over the full calibration period, this amounts to about $24.7\cdot10^6$ field comparisons per predictor of the first level of analogy. Here, one optimization required in average about 200 generations made of 2000 individuals, which brings the average number of grid comparisons to about $1\cdot10^{13}$ per predictor of the first level of analogy. Using profilers, the comparison of the gridded predictors -- the calculation of the analogy criteria -- was clearly identified as the most time-consuming task, despite the use of the efficient linear algebra library Eigen 3 \cite{Guennebaud2010}.
 
 In order to reduce the processing time, computation using graphics processing units (GPUs) was implemented in AtmoSwing v.2.1.2 \cite{Horton2019b}. The calculation of the analogy criteria has thus been written using NVIDIA's CUDA. The different criteria available in AtmoSwing were written as kernels that run on the GPU.
 
-Three different approaches were assessed. (1) The first one consisted in making comparison of the target and a single candidate date on the kernel, calling the kernel for every comparison (multiple million times). This was the less efficient method as it involved many data copy to the GPU, often copying the same data again and again. The overhead from memory management was substantial. (2) An opposite approach consisted in copying the full predictor data to the GPU along with arrays of indices corresponding to the location of the target and candidate data that needed to be compared, and the grid sizes. In a single kernel call, all the comparisons were performed. The performance largely increased compared to the first version, but the arrays containing the indices turned out to be large (containing multiple million entries). (3) Finally, an intermediate solution ended up to be optimal. It consisted in loading the predictor data on the device and calling the kernel for every target date, thus assessing all candidates for that target date in one call. In this implementation, a single and shorter array of indices (for the candidate dates) was needed. The main benefit of this variant is that it allowed overlapping -- using streams -- the calculation of the analogy criteria on the GPU and other calculations on the CPU, such as the extraction of the indices corresponding to the candidate dates (using a temporal moving window of 120~days) and the sorting of the resulting analogy criteria.
+Several implementations were tested, with the most successful aiming at a reduction of the data copy to the device while increasing the load of parallel processing. It consisted in copying the predictor data to the device and calling the kernel for every target date, thus assessing all candidates for that target date in one call. The main benefit of this variant is that it allowed overlapping -- using streams -- the calculation of the analogy criteria on the GPU and other calculations on the CPU, such as the extraction of the indices corresponding to the candidate dates (using a temporal moving window of 120~days) and the sorting of the resulting analogy criteria.
 
-Threads on the GPU are organized in blocks dynamically defined, sizing from 32 to 1024 threads. Here, every candidate date was assigned to a different block, with internal loops for cases when the number of grid points was higher than the number of threads in the block. All analogy criteria need a reduction step to synthesize a two-dimensional array into a single value. The reduction is part of the calculation of the analogy criteria and was thus done on the GPU. The threads are organized in groups of 32, called warps, that are synchronous and can access each-other registers. The reduction on the device was performed with an efficient warp-based reduction using the shuffle instruction. Different block sizes were assessed and a size of 64~threads was identified as optimal as it left less threads inactive during the reduction. Access to the GPU's global memory was also limited to a minimum due to its higher latency.
+Threads on the GPU are organized in blocks dynamically defined, sizing from 32 to 1024 threads. Here, every candidate date was assigned to a different block, with internal loops for cases where the number of grid points was higher than the number of threads in the block. All analogy criteria need a reduction step to synthesize a two-dimensional array into a single value. The reduction is part of the calculation of the analogy criteria and was thus done on the GPU. The threads are organized in groups of 32, called warps, that are synchronous and can access each-other registers. The reduction on the device was performed with an efficient warp-based reduction using the shuffle instruction. Different block sizes were assessed and a size of 64~threads was identified as optimal as it left less threads inactive during the reduction. Access to the GPU's global memory was also limited to a minimum due to its higher latency.
 
-\begin{figure}
-	\noindent\includegraphics[width=130mm]{figures/cuda-timing.pdf}
-	\caption{Processing time for the extraction of analogs over 32 years using the S1 criteria for different grid sizes and various structures of AMs. The structures are represented by a LxP code, L being the number of levels of analogy, and P being the number of predictors per level. Time is given for the use of (s) standard CPUs and (c) CUDA on GPUs. Note the logarithmic axes.}
-	\label{cuda}
-\end{figure}
+Results of a benchmark experiment can be found in Appendix A. The calculations on the GPU were 13 times faster in average, and up to a maximum of 38 times faster (5.2~sec instead of 3.3~min).
 
-The Google benchmark library was used to assess the processing time of different structures of the AM -- a single or two levels of analogy and up to four predictors per level -- along with various grid sizes. Figure \ref{cuda} shows the results for the analogy criterion S1, with gradients being pre-processed (counted in the total time). The other analogy criteria show similar results. The task consists in extracting analogs for 32 years by using the other 31 years as archive for candidate situations, within a 120~days temporal window. This makes a total of $43.5\cdot10^6$ field comparisons per predictor of the first level of analogy.
-
-The experiment was conducted on the cluster of the University of Bern, using the same node for the whole benchmark, processing on a single NVIDIA GeForce RTX 2080 graphics card. The processing on the CPU -- using the linear algebra library Eigen 3 \cite{Guennebaud2010} -- was done on a single thread. Although AtmoSwing can parallelize the calculation of the analogy criteria on multiple CPU threads, it is using a single thread for this task when optimizing with GAs because it parallelizes the evaluation of the different individuals on multiple threads. Now, with the use of GPUs, it still assesses the individuals on multiple CPU threads, each of them being able to exploit a different GPU device for the calculation of the analogy criteria. It is thus parallelizing both on CPUs and GPUs.
-
-The benchmark (Fig. \ref{cuda}) shows that the calculations on the GPU are systematically faster than those on the CPU, and this difference increases with the number of grid points. The calculations on the GPU were 13 times faster in average, and up to a maximum of 38 times faster (5.2~sec instead of 3.3~min) when using 2048 points. Model outputs and reanalyses show an increase in spatial resolution and thus this will become increasingly important. When using CPU only, the addition of a predictor in the first level of analogy has a much higher impact on time than the addition of a second level of analogy. This is explained by the fact that it needs to process the analogy criteria for the whole archive for each predictor of the first level of analogy, while the second level has only few candidate situations to assess.
-
-%TODO: add comparison with multiple CPUs
 
 \section{Experiment Setup}
 \label{setup}
@@ -559,14 +562,25 @@ The most often used analogy criteria in AMs are the Root Mean Squared Error (RMS
 %
 % The \appendix command resets counters and redefines section heads
 %
-% After typing \appendix
-%
-%\section{Here Is Appendix Title}
-% will show
-% A: Here Is Appendix Title
-%
-%\appendix
-%\section{Here is a sample appendix}
+
+\appendix
+
+\section{Benchmarks of the GPU implementation}
+
+\begin{figure}
+	\noindent\includegraphics[width=130mm]{figures/cuda-timing.pdf}
+	\caption{Processing time for the extraction of analogs over 32 years using the S1 criteria for different grid sizes and various structures of AMs. The structures are represented by a LxP code, L being the number of levels of analogy, and P being the number of predictors per level. Time is given for the use of (s) standard CPUs and (c) CUDA on GPUs. Note the logarithmic axes.}
+	\label{cuda}
+\end{figure}
+
+The Google benchmark library was used to assess the processing time of different structures of the AM -- a single or two levels of analogy and up to four predictors per level -- along with various grid sizes. Figure \ref{cuda} shows the results for the analogy criterion S1, with gradients being pre-processed using CPUs only (counted in the total time). The other analogy criteria showed similar results. The task consisted in extracting analogs for 32 years by using the other 31 years as archive for candidate situations, within a 120~days temporal window. This makes a total of $43.5\cdot10^6$ field comparisons per predictor of the first level of analogy.
+
+The experiment was conducted on the cluster of the University of Bern, using the same node for the whole benchmark, processing on a single NVIDIA GeForce RTX 2080 graphics card. The processing on the CPU -- using the linear algebra library Eigen 3 \cite{Guennebaud2010} -- was done on a single thread. Although AtmoSwing can parallelize the calculation of the analogy criteria on multiple CPU threads, it is using a single thread for this task when optimizing with GAs because it parallelizes the evaluation of the different individuals on multiple threads. Now, with the use of GPUs, it still assesses the individuals on multiple CPU threads, each of them being able to exploit a different GPU device for the calculation of the analogy criteria. It is thus parallelizing both on CPUs and GPUs.
+
+The benchmark (Fig. \ref{cuda}) shows that the calculations on the GPU are systematically faster than those on the CPU, and this difference increases with the number of grid points. The calculations on the GPU were 13 times faster in average, and up to a maximum of 38 times faster (5.2~sec instead of 3.3~min) when using 2048 points. Model outputs and reanalyses show an increase in spatial resolution and thus this will become increasingly important. When using CPU only, the addition of a predictor in the first level of analogy has a much higher impact on time than the addition of a second level of analogy. This is explained by the fact that it needs to process the analogy criteria for the whole archive for each predictor of the first level of analogy, while the second level has only few candidate situations to assess.
+
+%TODO: add comparison with multiple CPUs
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
