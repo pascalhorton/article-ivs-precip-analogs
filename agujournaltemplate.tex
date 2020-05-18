@@ -275,6 +275,7 @@ The probabilistic prediction for the target day is then provided by the empirica
 
 
 \subsection{Genetic Algorithms}
+\label{gas}
 
 A variant of genetic algorithms (GAs) has been tailored for the optimization of AMs by \citeA{Horton2017a}. All the parameters of the method but the meteorological variables and the analogy criteria could already be successfully optimized using GAs \cite{Horton2018a}. The use of GAs provided for the first time an objective and global optimization of AMs, which resulted in gain in prediction skills. To bring the optimization further, the selection of the predictor variables and the analogy criteria were here performed by GAs. 
 
@@ -285,10 +286,13 @@ The mutation operator was shown to have the largest impact on the success of the
 \begin{enumerate}
 	\item Chromosome of adaptive search radius
 	\item Multiscale mutation
-	\item Non-uniform mutation (pmut=0.1, Gmr=50, w=0.1)
-	\item Non-uniform mutation (pmut=0.1, Gmr=100, w=0.1)
-	\item Non-uniform mutation (pmut=0.2, Gmr=100, w=0.1)
+	\item Non-uniform mutation ($p_{mut}$=0.1, $G_{m,r}$=50, $w$=0.1)
+	\item Non-uniform mutation ($p_{mut}$=0.1, $G_{m,r}$=100, $w$=0.1)
+	\item Non-uniform mutation ($p_{mut}$=0.2, $G_{m,r}$=100, $w$=0.1)
 \end{enumerate}
+
+where $p_{mut}$ is the mutation probability, $G_{m,r}$ is the maximum number of generations
+during which the magnitude of the research varies and $w$ is a chosen threshold to maintain a minimum search meagnitude when $G>G_{m,r}$.
 
 The non-uniform mutation \cite{Michalewicz1996} aims at reducing the magnitude of the search in the parameters space with the evolution of the population in order to transition from exploration of the whole parameters space to exploitation of local solutions. This operator has three controlling parameters, which makes it difficult to control, and for this reason it is present with three different configurations in the selected presets. The multiscale mutation considers both exploration and exploitation in parallel. It has no controlling parameters and present no evolution during the optimization. The chromosome of adaptive search radius was introduced by \citeA{Horton2017a} and is inspired by the non-uniform mutation. However, it takes an auto-adaptive approach by adding two chromosomes, one for the mutation rate, and one for the control of the search magnitude \cite<see details in>{Horton2017a}. It has therefore no controlling parameters and is thus easier to use. 
 
@@ -429,15 +433,19 @@ The most often used analogy criteria in AMs are the Root Mean Squared Error (RMS
 
 
 \begin{figure}[h]
-	\noindent\includegraphics[width=170mm]{figures/ERA-I.pdf}
+	\noindent\makebox[\textwidth]{
+		\includegraphics[width=170mm]{figures/ERA-I.pdf}
+	}
 	\caption{Selected best variable for ERA-INT.}
-	\label{best_era_int}
+	\label{fig_best_era_int}
 \end{figure}
 
 \begin{figure}[h]
-	\noindent\includegraphics[width=170mm]{figures/CFSR.pdf}
+	\noindent\makebox[\textwidth]{
+		\includegraphics[width=170mm]{figures/CFSR.pdf}
+	}
 	\caption{Selected best variable for CFSR.}
-	\label{best_cfsr}
+	\label{fig_best_cfsr}
 \end{figure}
 
 \subsection{Assessing AM Structures}
@@ -448,8 +456,27 @@ The most often used analogy criteria in AMs are the Root Mean Squared Error (RMS
 \todo[inline]{assess most performing GAs operators}
 
 
+
+The results also depicted significant differences between the mutation operators (Sect. \ref{gas}). The chromosome of adaptive search radius (option \#1) resulted in the best performing parameters sets 76.3\% of the time for the calibration period, and 62.5\% of the time for the validation period (Fig. \ref{fig_mutation_operators_perfs}).  The second best is the non-uniform mutation with a mutation probability ($p_{mut}$) of 0.1 (option \#4) with a success rate of 11.3\% for the calibration period and 21.3\% for the validation period. However, the same operator with a  mutation probability ($p_{mut}$) of 0.2 (option \#5; $G_{m,r}$=100) is the worst performing option, with a success rate of 1.3\% for the calibration period and 2.5\% for the validation period. This quite well illustrate the difficulty of tuning such operators and the risk of a badly-parametrized mutation operator and the benefit of a auto-adaptive operator such as the chromosome of adaptive search radius that has no controlling parameter. Moreover, this operator was also usually performing better for more complex structures of the AM.
+
+
+
+
+\begin{figure}[h]
+	\noindent\makebox[\textwidth]{
+		\includegraphics[width=180mm]{figures/ams-structures.pdf}
+	}
+	\caption{Selected best variable for CFSR.}
+	\label{fig_structures}
+\end{figure}
+
+
 \subsection{Best Variables Combination}
 \label{best_multi}
+
+* weight: iteration="0.01"
+* only the chromosome of adaptive search radius
+
 
 \todo[inline]{optimize with relevant structure for all catchments. remove criteria and variables that were not selected before ? Adjust max domain ?}
 \todo[inline]{try to build 1 common AM for all catchments (same predictors, different weights)}
@@ -580,6 +607,23 @@ The experiment was conducted on the cluster of the University of Bern, using the
 The benchmark (Fig. \ref{cuda}) shows that the calculations on the GPU are systematically faster than those on the CPU, and this difference increases with the number of grid points. The calculations on the GPU were 13 times faster in average, and up to a maximum of 38 times faster (5.2~sec instead of 3.3~min) when using 2048 points. Model outputs and reanalyses show an increase in spatial resolution and thus this will become increasingly important. When using CPU only, the addition of a predictor in the first level of analogy has a much higher impact on time than the addition of a second level of analogy. This is explained by the fact that it needs to process the analogy criteria for the whole archive for each predictor of the first level of analogy, while the second level has only few candidate situations to assess.
 
 %TODO: add comparison with multiple CPUs
+
+
+\section{Performance of the mutation operators}
+
+
+Success percentages:
+calib: [76.25  7.5  11.25 11.25  1.25]
+valid : [62.5   8.75 10.   21.25  2.5 ]
+
+\begin{figure}
+	\noindent\makebox[\textwidth]{
+		\includegraphics[width=170mm]{figures/gas-configs-ams-structures.pdf}
+	}
+	\caption{...}
+	\label{fig_mutation_operators_perfs}
+\end{figure}
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
