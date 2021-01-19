@@ -198,30 +198,30 @@ The precipitation data considered is the RhiresD gridded dataset provided by Met
 		Id & Name of the river & Climatic region & Area & Mean elevation \\
 		& & & (km$^2$) & (m a.s.l.) \\
 		\hline 
-		1 & L'Allaine & Jura oriental & 209.1 & 571 \\
-		2 & Ergolz & Jura oriental & 150.3 & 589 \\
-		3 & L'Orbe & Jura occidental & 209.3 & 1229 \\
-		4 & La Birse & Jura occidental & 203.3 & 920 \\
-		5 & La Broye & Plateau occidental & 184.5 & 791 \\
-		6 & Murg & Plateau central & 184.8 & 658 \\
-		7 & Aabach & Plateau central & 180.0 & 562 \\
-		8 & T\"oss & Partie nord-est du Plateau & 189.3 & 745 \\
-		9 & Sense & Partie occidentale du versant nord des Alpes & 179.6 & 1238 \\
-		10 & La Sarine & Partie occidentale du versant nord des Alpes & 200.8 & 1779 \\
-		11 & Weisse L\"utschine & Partie occidentale du versant nord des Alpes & 165.0 & 2149 \\
-		12 & Emme & Partie centrale du versant nord des Alpes & 206.9 & 1151 \\
-		13 & Engelberger Aa & Partie centrale du versant nord des Alpes & 204.3 & 1654 \\
-		14 & Linth & Partie orientale du versant nord des Alpes & 195.7 & 1959 \\
-		15 & Sitter & Partie orientale du versant nord des Alpes & 162.2 & 1069 \\
-		16 & Valais & Dranse d'Entremont & 154.2 & 2340 \\
-		17 & Valais & La Navisence & 210.5 & 2541 \\
-		18 & Valais & Lonza & 161.7 & 2370 \\
-		19 & Doveria & Sud des Alpes & 170.5 & 2241 \\
-		20 & Ticino & Sud des Alpes & 208.5 & 2019 \\
-		21 & Verzasca & Sud des Alpes & 187.4 & 1656 \\
-		22 & Valser Rhein & Nord et centre des Grisons & 185.8 & 2215 \\
-		23 & Plessur & Nord et centre des Grisons & 207.7 & 1928 \\
-		24 & Mera & Sud des Alpes & 190.6 & 2142 \\
+		1 & L'Allaine & Eastern Jura & 209.1 & 571 \\
+		2 & Ergolz & Eastern Jura & 150.3 & 589 \\
+		3 & L'Orbe & Western Jura & 209.3 & 1229 \\
+		4 & La Birse & Western Jura & 203.3 & 920 \\
+		5 & La Broye & Western Plateau & 184.5 & 791 \\
+		6 & Murg & Central Plateau & 184.8 & 658 \\
+		7 & Aabach & Central Plateau & 180.0 & 562 \\
+		8 & T\"oss & Northeastern part of the Plateau & 189.3 & 745 \\
+		9 & Sense & Western part of the Alps northern side & 179.6 & 1238 \\
+		10 & La Sarine & Western part of the Alps northern side & 200.8 & 1779 \\
+		11 & Weisse L\"utschine & Western part of the Alps northern side & 165.0 & 2149 \\
+		12 & Emme & Centrale part of the Alps northern side & 206.9 & 1151 \\
+		13 & Engelberger Aa & Centrale part of the Alps northern side & 204.3 & 1654 \\
+		14 & Linth & Eastern part of the Alps northern side & 195.7 & 1959 \\
+		15 & Sitter & Eastern part of the Alps northern side & 162.2 & 1069 \\
+		16 & Dranse d'Entremont & Wallis & 154.2 & 2340 \\
+		17 & La Navisence & Wallis & 210.5 & 2541 \\
+		18 & Lonza & Wallis & 161.7 & 2370 \\
+		19 & Doveria & Southern Alps & 170.5 & 2241 \\
+		20 & Ticino & Southern Alps & 208.5 & 2019 \\
+		21 & Verzasca & Southern Alps & 187.4 & 1656 \\
+		22 & Valser Rhein & North and Central Graubünden & 185.8 & 2215 \\
+		23 & Plessur & North and Central Graubünden & 207.7 & 1928 \\
+		24 & Mera & Southern Alps & 190.6 & 2142 \\
 		25 & Flaz & Engadine & 193.1 & 2599 \\
 		\hline 
 	\end{tabular} 
@@ -358,44 +358,49 @@ The meteorological variables were considered for different types of vertical ver
 	\begin{tabular}{lll|cccc|cccc}
 		\hline 
 		Variable & Id & Unit &  &  \multicolumn{2}{c}{\textbf{ERA-I}}  &  &  &  \multicolumn{2}{c}{\textbf{CFSR}}  &  \\
-		&  & \multicolumn{1}{r|}{Levels:} & PL & PTL & PVL & SC & PL & PTL & PVL & SC \\
+		&  & \multicolumn{1}{r|}{Levels:} & PL & PT & PV & SC & PL & PT & PV & SC \\
 		\hline 
-		Divergence  & D & s$^{-1}$ & $\bullet$ & $\bullet$ &  &  &  &  &  &  \\
-		Geopotential height & Z & gpm & $\bullet$ &  & $\bullet$ &  & $\bullet$ &  & $\bullet$ & $\bullet$ \\
-		Geopotential height anomaly  & ZA & gpm &  &  &  &  & $\bullet$ &  &  &  \\
-		Potential vorticity  & PV & m$^{2}$ s$^{-1}$ K kg$^{-1}$ & $\bullet$ & $\bullet$ &  &  &  & $\bullet$ &  &  \\
-		Relative humidity & RH & \% & $\bullet$ &  &  &  & $\bullet$ & $\bullet$ &  & $\bullet$ \\
-		Specific humidity & SH & kg kg$^{-1}$ & $\bullet$ & $\bullet$ &  &  & $\bullet$ &  &  &  \\
-		Temperature & T & K & $\bullet$ &  &  & $^{\ }\bullet^{b}$ & $\bullet$ & $\bullet$ & $\bullet$ &  \\
-		Eastward wind & U & m s$^{-1}$ & $\bullet$ & $\bullet$ & $\bullet$ &   $^{\ }\bullet^{a}$ & $\bullet$ & $\bullet$ & $\bullet$ &  \\
-		Northward wind & V & m s$^{-1}$ & $\bullet$ & $\bullet$ & $\bullet$ &   $^{\ }\bullet^{a}$ & $\bullet$ & $\bullet$ & $\bullet$ &  \\
-		Vertical velocity & W & Pa s$^{-1}$ & $\bullet$ & $\bullet$ &  &  & $\bullet$ & $\bullet$ &  &  \\
-		Vorticity & VO & s$^{-1}$ & $\bullet$ &  &  &  & $\bullet$ &  &  &  \\
-		Stream function & STRM & m$^{2}$ s$^{-1}$ &  &  &  &  & $\bullet$ &  &  &  \\
-		Velocity potential & VPOT & m$^{2}$ s$^{-1}$ &  &  &  &  & $\bullet$ &  &  &  \\
-		Montgomery potential & MONT & m$^{2}$ s$^{-2}$ &  & $\bullet$ &  &  &  &  &  & \\ 
-		Pressure & PRES & Pa &  & $\bullet$ & $\bullet$ &   $^{\ }\bullet^{c}$ &  &  & $\bullet$ &  $\bullet\bullet^{c}$ \\
-		Potential temperature & PT & K &  &  & $\bullet$ &  &  &  &  &  \\
-		Lapse rate & LAPR & K m$^{-1}$ &  &  &  &  &  & $\bullet$ &  &  \\
-		Montgomery stream function & MNTSF & m$^{2}$ s$^{-1}$ &  &  &  &  &  & $\bullet$ &  &  \\
-		Vertical speed shear & WSH & s$^{-1}$ &  &  &  &  &  &  & $\bullet$ &  \\
-		Dewpoint temperature & DT & K &  &  &  & $^{\ }\bullet^{a}$ &  &  &  &  \\
-		Sea surface temperature & SST & K &  &  &  & $\bullet$ &  &  &  &  \\
-		Snow depth & SD & m of w.e. &  &  &  & $\bullet$ &  &  &  &  \\
-		Total column water & TCW & kg m$^{-2}$ &  &  &  & $\bullet$ &  &  &  &  \\
-		Total column water vapour & TCWV & kg m$^{-2}$ &  &  &  & $\bullet$ &  &  &  & $\bullet$ \\
-		Cloud water & CWAT & kg m$^{-2}$ &  &  &  &  &  &  &  & $\bullet$ \\
-		Convective avail. pot. energy & CAPE & J kg$^{-1}$ &  &  &  & $\bullet$ &  &  &  & $\bullet$ \\
-		Convective inhibition & CIN & J kg$^{-1}$ &  &  &  &  &  &  &  & $\bullet$ \\
-		Instantaneous moisture flux & IE & kg m$^{-2}$ s$^{-1}$ &  &  &  & $\bullet$ &  &  &  &  \\
-		Surf. net solar radiation & SSR & J m$^{-2}$ &  &  &  & $\bullet$ &  &  &  &  \\
-		Surf. solar rad. downwards & SRRD & J m$^{-2}$ &  &  &  & $\bullet$ &  &  &  &  \\
-		Surf. net thermal radiation & STR & J m$^{-2}$ &  &  &  & $\bullet$ &  &  &  &  \\
-		Surf. thermal rad. downwards & STRD & J m$^{-2}$ &  &  &  & $\bullet$ &  &  &  &  \\
-		Best (4 layer) lifted index & 4LFTX & K &  &  &  &  &  &  &  & $\bullet$ \\
-		Surface lifted index & LFTX & K &  &  &  &  &  &  &  & $\bullet$ \\
+		\multicolumn{11}{l}{\textbf{Circulation variables}} \\
+		\ Geopotential height & Z & gpm & $\bullet$ &  & $\bullet$ &  & $\bullet$ &  & $\bullet$ & $\bullet$ \\
+		\ Geopotential height anomaly  & ZA & gpm &  &  &  &  & $\bullet$ &  &  &  \\
+		\ Eastward wind & U & m s$^{-1}$ & $\bullet$ & $\bullet$ & $\bullet$ &   $^{\ }\bullet^{a}$ & $\bullet$ & $\bullet$ & $\bullet$ &  \\
+		\ Northward wind & V & m s$^{-1}$ & $\bullet$ & $\bullet$ & $\bullet$ &   $^{\ }\bullet^{a}$ & $\bullet$ & $\bullet$ & $\bullet$ &  \\
+		\ Pressure & PRES & Pa &  & $\bullet$ & $\bullet$ &   $^{\ }\bullet^{c}$ &  &  & $\bullet$ &  $\bullet\bullet^{c}$ \\
+		\ Vertical velocity & W & Pa s$^{-1}$ & $\bullet$ & $\bullet$ &  &  & $\bullet$ & $\bullet$ &  &  \\
+		\ Vertical speed shear & WSH & s$^{-1}$ &  &  &  &  &  &  & $\bullet$ &  \\
+		\ Divergence  & D & s$^{-1}$ & $\bullet$ & $\bullet$ &  &  &  &  &  &  \\
+		\ Vorticity & VO & s$^{-1}$ & $\bullet$ &  &  &  & $\bullet$ &  &  &  \\
+		\ Potential vorticity  & PV & m$^{2}$ s$^{-1}$ K kg$^{-1}$ & $\bullet$ & $\bullet$ &  &  &  & $\bullet$ &  &  \\
+		\ Stream function & STRM & m$^{2}$ s$^{-1}$ &  &  &  &  & $\bullet$ &  &  &  \\
+		\ Velocity potential & VPOT & m$^{2}$ s$^{-1}$ &  &  &  &  & $\bullet$ &  &  &  \\
+		\ Montgomery potential & MONT & m$^{2}$ s$^{-2}$ &  & $\bullet$ &  &  &  &  &  & \\ \ Montgomery stream function & MNTSF & m$^{2}$ s$^{-1}$ &  &  &  &  &  & $\bullet$ &  &  \\
+		\multicolumn{11}{l}{\textbf{Moisture variables}} \\
+		\ Relative humidity & Q & \% & $\bullet$ &  &  &  & $\bullet$ & $\bullet$ &  & $\bullet$ \\
+		\ Specific humidity & SH & kg kg$^{-1}$ & $\bullet$ & $\bullet$ &  &  & $\bullet$ &  &  &  \\
+		\ Total column water & TCW & kg m$^{-2}$ &  &  &  & $\bullet$ &  &  &  &  \\
+		\ Total column water vapour & TCWV & kg m$^{-2}$ &  &  &  & $\bullet$ &  &  &  & $\bullet$ \\
+		\ Cloud water & CWAT & kg m$^{-2}$ &  &  &  &  &  &  &  & $\bullet$ \\
+		\ Instantaneous moisture flux & IE & kg m$^{-2}$ s$^{-1}$ &  &  &  & $\bullet$ &  &  &  &  \\
+		\multicolumn{11}{l}{\textbf{Temperature variables}} \\
+		\ Temperature & T & K & $\bullet$ &  &  & $^{\ }\bullet^{b}$ & $\bullet$ & $\bullet$ & $\bullet$ &  \\
+		\ Potential temperature & PT & K &  &  & $\bullet$ &  &  &  &  &  \\
+		\ Lapse rate & LAPR & K m$^{-1}$ &  &  &  &  &  & $\bullet$ &  &  \\
+		\ Dewpoint temperature & DT & K &  &  &  & $^{\ }\bullet^{a}$ &  &  &  &  \\
+		\ Sea surface temperature & SST & K &  &  &  & $\bullet$ &  &  &  &  \\
+		\multicolumn{11}{l}{\textbf{Radiation variables}} \\
+		\ Surf. net solar radiation & SSR & J m$^{-2}$ &  &  &  & $\bullet$ &  &  &  &  \\
+		\ Surf. solar rad. downwards & SSRD & J m$^{-2}$ &  &  &  & $\bullet$ &  &  &  &  \\
+		\ Surf. net thermal radiation & STR & J m$^{-2}$ &  &  &  & $\bullet$ &  &  &  &  \\
+		\ Surf. thermal rad. downwards & STRD & J m$^{-2}$ &  &  &  & $\bullet$ &  &  &  &  \\
+		\multicolumn{11}{l}{\textbf{Stability indices}} \\
+		\ Convective avail. pot. energy & CAPE & J kg$^{-1}$ &  &  &  & $\bullet$ &  &  &  & $\bullet$ \\
+		\ Convective inhibition & CIN & J kg$^{-1}$ &  &  &  &  &  &  &  & $\bullet$ \\
+		\ Best (4 layer) lifted index & 4LFTX & K &  &  &  &  &  &  &  & $\bullet$ \\
+		\ Surface lifted index & LFTX & K &  &  &  &  &  &  &  & $\bullet$ \\
+		\multicolumn{11}{l}{\textbf{Others}} \\
+		\ Snow depth & SD & m of w.e. &  &  &  & $\bullet$ &  &  &  &  \\
 		\hline
-		\multicolumn{11}{l}{PL = pressure levels, PTL = pot. temp. levels, PVL = pot. vorticity levels, SC = surface or total column}\\
+		\multicolumn{11}{l}{PL = pressure levels, PT = pot. temp. levels, PV = pot. vorticity levels, SC = surface or total column}\\
 		\multicolumn{11}{l}{$^{a}$at 2~m, $^{b}$at 10~m, $^{c}$at mean sea level.}\\
 		\hline 
 	\end{tabular}}
