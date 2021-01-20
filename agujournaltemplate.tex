@@ -360,48 +360,53 @@ The meteorological variables were considered for different types of vertical ver
 		Variable & Id & Unit &  &  \multicolumn{2}{c}{\textbf{ERA-I}}  &  &  &  \multicolumn{2}{c}{\textbf{CFSR}}  &  \\
 		&  & \multicolumn{1}{r|}{Levels:} & PL & PT & PV & SC & PL & PT & PV & SC \\
 		\hline 
-		\multicolumn{11}{l}{\textbf{Circulation variables}} \\
+		\multicolumn{3}{l|}{\uppercase{Circulation variables}}  & & & & & & & & \\
 		\ Geopotential height & Z & gpm & $\bullet$ &  & $\bullet$ &  & $\bullet$ &  & $\bullet$ & $\bullet$ \\
 		\ Geopotential height anomaly  & ZA & gpm &  &  &  &  & $\bullet$ &  &  &  \\
-		\ Eastward wind & U & m s$^{-1}$ & $\bullet$ & $\bullet$ & $\bullet$ &   $^{\ }\bullet^{a}$ & $\bullet$ & $\bullet$ & $\bullet$ &  \\
-		\ Northward wind & V & m s$^{-1}$ & $\bullet$ & $\bullet$ & $\bullet$ &   $^{\ }\bullet^{a}$ & $\bullet$ & $\bullet$ & $\bullet$ &  \\
+		\ Zonal wind & U & m s$^{-1}$ & $\bullet$ & $\bullet$ & $\bullet$ &   $^{\ }\bullet^{a}$ & $\bullet$ & $\bullet$ & $\bullet$ &  \\
+		\ Meridional wind & V & m s$^{-1}$ & $\bullet$ & $\bullet$ & $\bullet$ &   $^{\ }\bullet^{a}$ & $\bullet$ & $\bullet$ & $\bullet$ &  \\
 		\ Pressure & PRES & Pa &  & $\bullet$ & $\bullet$ &   $^{\ }\bullet^{c}$ &  &  & $\bullet$ &  $\bullet\bullet^{c}$ \\
 		\ Vertical velocity & W & Pa s$^{-1}$ & $\bullet$ & $\bullet$ &  &  & $\bullet$ & $\bullet$ &  &  \\
-		\ Vertical speed shear & WSH & s$^{-1}$ &  &  &  &  &  &  & $\bullet$ &  \\
 		\ Divergence  & D & s$^{-1}$ & $\bullet$ & $\bullet$ &  &  &  &  &  &  \\
 		\ Vorticity & VO & s$^{-1}$ & $\bullet$ &  &  &  & $\bullet$ &  &  &  \\
 		\ Potential vorticity  & PV & m$^{2}$ s$^{-1}$ K kg$^{-1}$ & $\bullet$ & $\bullet$ &  &  &  & $\bullet$ &  &  \\
 		\ Stream function & STRM & m$^{2}$ s$^{-1}$ &  &  &  &  & $\bullet$ &  &  &  \\
 		\ Velocity potential & VPOT & m$^{2}$ s$^{-1}$ &  &  &  &  & $\bullet$ &  &  &  \\
-		\ Montgomery potential & MONT & m$^{2}$ s$^{-2}$ &  & $\bullet$ &  &  &  &  &  & \\ \ Montgomery stream function & MNTSF & m$^{2}$ s$^{-1}$ &  &  &  &  &  & $\bullet$ &  &  \\
-		\multicolumn{11}{l}{\textbf{Moisture variables}} \\
-		\ Relative humidity & Q & \% & $\bullet$ &  &  &  & $\bullet$ & $\bullet$ &  & $\bullet$ \\
+		\ Montgomery potential & MONT & m$^{2}$ s$^{-2}$ &  & $\bullet$ &  &  &  &  &  & \\
+		\ Montgomery stream function & MNTSF & m$^{2}$ s$^{-1}$ &  &  &  &  &  & $\bullet$ &  &  \\
+		\hline
+		\multicolumn{3}{l|}{\uppercase{Moisture variables}} & & & & & & & & \\
+		\ Relative humidity & RH & \% & $\bullet$ &  &  &  & $\bullet$ & $\bullet$ &  & $\bullet$ \\
 		\ Specific humidity & SH & kg kg$^{-1}$ & $\bullet$ & $\bullet$ &  &  & $\bullet$ &  &  &  \\
 		\ Total column water & TCW & kg m$^{-2}$ &  &  &  & $\bullet$ &  &  &  &  \\
 		\ Total column water vapour & TCWV & kg m$^{-2}$ &  &  &  & $\bullet$ &  &  &  & $\bullet$ \\
 		\ Cloud water & CWAT & kg m$^{-2}$ &  &  &  &  &  &  &  & $\bullet$ \\
-		\ Instantaneous moisture flux & IE & kg m$^{-2}$ s$^{-1}$ &  &  &  & $\bullet$ &  &  &  &  \\
-		\multicolumn{11}{l}{\textbf{Temperature variables}} \\
+		\ Surface moisture flux & IE & kg m$^{-2}$ s$^{-1}$ &  &  &  & $\bullet$ &  &  &  &  \\
+		\hline
+		\multicolumn{3}{l|}{\uppercase{Temperature variables}} & & & & & & & & \\
 		\ Temperature & T & K & $\bullet$ &  &  & $^{\ }\bullet^{b}$ & $\bullet$ & $\bullet$ & $\bullet$ &  \\
 		\ Potential temperature & PT & K &  &  & $\bullet$ &  &  &  &  &  \\
-		\ Lapse rate & LAPR & K m$^{-1}$ &  &  &  &  &  & $\bullet$ &  &  \\
-		\ Dewpoint temperature & DT & K &  &  &  & $^{\ }\bullet^{a}$ &  &  &  &  \\
+		\ Dewpoint temperature* & DT & K &  &  &  & $^{\ }\bullet^{a}$ &  &  &  &  \\
 		\ Sea surface temperature & SST & K &  &  &  & $\bullet$ &  &  &  &  \\
-		\multicolumn{11}{l}{\textbf{Radiation variables}} \\
+		\hline
+		\multicolumn{3}{l|}{\uppercase{Radiation variables}} & & & & & & & & \\
 		\ Surf. net solar radiation & SSR & J m$^{-2}$ &  &  &  & $\bullet$ &  &  &  &  \\
 		\ Surf. solar rad. downwards & SSRD & J m$^{-2}$ &  &  &  & $\bullet$ &  &  &  &  \\
 		\ Surf. net thermal radiation & STR & J m$^{-2}$ &  &  &  & $\bullet$ &  &  &  &  \\
 		\ Surf. thermal rad. downwards & STRD & J m$^{-2}$ &  &  &  & $\bullet$ &  &  &  &  \\
-		\multicolumn{11}{l}{\textbf{Stability indices}} \\
+		\hline
+		\multicolumn{3}{l|}{\uppercase{Stability indices}} & & & & & & & & \\
 		\ Convective avail. pot. energy & CAPE & J kg$^{-1}$ &  &  &  & $\bullet$ &  &  &  & $\bullet$ \\
 		\ Convective inhibition & CIN & J kg$^{-1}$ &  &  &  &  &  &  &  & $\bullet$ \\
 		\ Best (4 layer) lifted index & 4LFTX & K &  &  &  &  &  &  &  & $\bullet$ \\
 		\ Surface lifted index & LFTX & K &  &  &  &  &  &  &  & $\bullet$ \\
-		\multicolumn{11}{l}{\textbf{Others}} \\
+		\ Lapse rate & LAPR & K m$^{-1}$ &  &  &  &  &  & $\bullet$ &  &  \\
+		\hline
+		\multicolumn{3}{l|}{\uppercase{Others}} & & & & & & & & \\
 		\ Snow depth & SD & m of w.e. &  &  &  & $\bullet$ &  &  &  &  \\
 		\hline
 		\multicolumn{11}{l}{PL = pressure levels, PT = pot. temp. levels, PV = pot. vorticity levels, SC = surface or total column}\\
-		\multicolumn{11}{l}{$^{a}$at 2~m, $^{b}$at 10~m, $^{c}$at mean sea level.}\\
+		\multicolumn{11}{l}{*moisture and temperature variable, $^{a}$at 2~m, $^{b}$at 10~m, $^{c}$at mean sea level.}\\
 		\hline 
 	\end{tabular}}
 	\label{list_variables}
