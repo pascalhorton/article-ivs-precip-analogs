@@ -349,8 +349,6 @@ where $H(y-y_{i}^{0})$ is the Heaviside function that is null when $y-y_{i}^{0}<
 
 The meteorological variables were considered for different types of vertical vertical levels: surface / entire atmosphere, pressure levels (1000, 950, 900, 850, 800, 700, 600, 500, 400, 300, 200~hPa), potential temperature levels (290, 300, 310, 320, 330, 350, 400~K), and potential vorticity levels. The selected variables are listed in table \ref{list_variables}. All the variables and levels are mixed so that the optimization can pick any variable on any level type and value, as long as it is available. Precipitation variables from reanalyses were not considered as potential predictors, as they strongly depend on the model physics \cite{Rienecker2011} and have significant biases that are not well balanced by the downscaling procedure \cite{Dayon2015}. The variables were standardized on the fly by AtmoSwing when loading from files. The standardization has no impact on the selection of analog situations for a single predictor, but it makes the combination of predictors within one level of analogy more balanced, as they might have very different order of magnitude and units. This allows a more effective optimization of the weights between predictors. 
 
-%TODO: Reorder the variables in the table ? Group by variable type ?
-
 \begin{table}
 	\caption{Selected variables for ERA-I and CFSR.}
 	%\small
@@ -443,7 +441,7 @@ The most often used analogy criteria in AMs are the Root Mean Squared Error (RMS
 
 \begin{figure}[h]
 	\noindent\makebox[\textwidth]{
-		\includegraphics[width=170mm]{figures/ERA-I.pdf}
+		\includegraphics[width=170mm]{figures/single-variables-ERA-I.pdf}
 	}
 	\caption{Selected best variable for ERA-INT.}
 	\label{fig_best_era_int}
@@ -451,10 +449,18 @@ The most often used analogy criteria in AMs are the Root Mean Squared Error (RMS
 
 \begin{figure}[h]
 	\noindent\makebox[\textwidth]{
-		\includegraphics[width=170mm]{figures/CFSR.pdf}
+		\includegraphics[width=170mm]{figures/single-variables-CFSR.pdf}
 	}
 	\caption{Selected best variable for CFSR.}
 	\label{fig_best_cfsr}
+\end{figure}
+
+\begin{figure}[h]
+	\noindent\makebox[\textwidth]{
+		\includegraphics[width=160mm]{figures/criteria.pdf}
+	}
+	\caption{Selected best criteria.}
+	\label{fig_criteria}
 \end{figure}
 
 \subsection{Assessing AM Structures}
@@ -490,6 +496,30 @@ The results also depicted significant differences between the mutation operators
 \todo[inline]{optimize with relevant structure for all catchments. remove criteria and variables that were not selected before ? Adjust max domain ?}
 \todo[inline]{try to build 1 common AM for all catchments (same predictors, different weights)}
 \todo[inline]{compare skill with existing AMs}
+
+\begin{figure}[h]
+	\noindent\makebox[\textwidth]{
+		\includegraphics[width=160mm]{figures/multiple-variables-structures.pdf}
+	}
+	\caption{Assessed AM structures.}
+	\label{fig_multiple_variables_structures}
+\end{figure}
+
+\begin{figure}[h]
+	\noindent\makebox[\textwidth]{
+		\includegraphics[width=180mm]{figures/multiple-variables.pdf}
+	}
+	\caption{Selected 8/12 variables for the different catchments.}
+	\label{fig_multiple_variables}
+\end{figure}
+
+\begin{figure}[h]
+	\noindent\makebox[\textwidth]{
+		\includegraphics[width=160mm]{figures/variables-importance.pdf}
+	}
+	\caption{Most selected variables and their weighting.}
+	\label{fig_variables_weights}
+\end{figure}
 
 
 \section{Discussion}
