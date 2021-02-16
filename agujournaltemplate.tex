@@ -20,6 +20,7 @@
 \usepackage[inline]{trackchanges} %for better track changes. finalnew option will compile document with changes incorporated.
 \usepackage{soul}
 \usepackage{gensymb}
+\usepackage{placeins}
 \linenumbers
 
 \usepackage{todonotes}
@@ -635,6 +636,8 @@ Issue with radiation data: \citep{Boilley2015}.
 % The \appendix command resets counters and redefines section heads
 %
 
+\FloatBarrier
+
 \appendix
 
 \section{Benchmarks of the GPU implementation}
@@ -710,7 +713,7 @@ valid : [62.5   8.75 10.   21.25  2.5 ]
 %  energy ($E$)—divided by the speed of light squared ($c^2$).
 %   \end{notation}
 
-
+\FloatBarrier
 
 \acknowledgments
 Precipitation time series were provided by MeteoSwiss. The catchment extents were provided by the Hydrological Atlas of Switzerland (hydrologicalatlas.ch). The ERA-Interim reanalysis was obtained from the ECMWF Data Server at http://apps.ecmwf.int/datasets. The Climate Forecast System Reanalysis (CFSR) was obtained from the Computational \& Information Systems Lab (CISL) Research Data Archive (http://rda.ucar.edu/). The CFSR project is carried out by the Environmental Modeling Center (EMC), National Centers for Environmental Prediction (NCEP). Calculations were performed on UBELIX (http://www.id.unibe.ch/hpc), the HPC cluster at the University of Bern. 
