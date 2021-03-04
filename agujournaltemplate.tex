@@ -609,10 +609,21 @@ Issue with radiation data: \cite{Boilley2015}.
 \section{Discussion}
 \label{discussion}
 
+\subsection{What about this S0 criteria?}
+
+The success of the S0 criteria over RMSE was unexpected, all the more so as it is the result of an error in the code. Overall, the triplet S0, S1 and S2 dominate the selection of analogy criteria. This is convenient for the combination of multiple predictors in a single level of analogy, as these criteria are then somehow normalized, independently of the eventual normalization of the predictors. With balanced analogy criteria values, the optimization of the weights is likely easier. However, this is not the reason for the selection of these criteria in the first place, as they were selected already for a unique predictor (Section \ref{best_single}). 
+
+It thus means that the normalization here changes the rank of the similarity between gridded fields as compared to a Mean Absolute Error. The metric can thus been seen as a relative similarity (like a percentage) rather than an absolute distance, which changes the comparison of data of different scales. Also, as the maximas are considered point-wise, this reduces the impact of very high local values and outliers.
+
+A relatively similar metric existing is the nMAE (normalized Mean Absolute Error), which normalizes the absolute difference by the sum of the observations. However, the authors have not found a normalization by the sum of the maximum of both absolute values (e.g. observation and forecats, or in our case target and candidate situation) as in S0.
+
+The S0 and S2 criteria suffer from the same issue than S1, which is that the denominator will be higher for fields with higher values than for smaller fields, leading to a smaller criteria values \cite{Thompson1972}. Let consider a field F1 that has values constantly 50\% lower than the reference field, and another one, F2, with values 50\% higher. Then, S0(F1) = 50 and S0(F2) = 33.3 while the absolute differences between the reference and F1 or F2 are equal. F2 will then be selected as a better analog. To get the same S0, F2 would need to be the double of the reference field. The consequence is that the selection of analogs based on S0, S1 and S2 is not symetrical and these criteria tend to select fields that are close to the reference, but preferably stronger than weaker. However, this aspect might be beneficial to the method.
+
+\todo[inline]{Test classic calibration with: S1 with normalization only by the reference = S1* + S0 and S0*}
+
+
 \subsection{Meteorological processes behind the selected variables}
 
-
-\subsection{Why does S0 perform so well?}
 
 
 \subsection{Computational burden}
