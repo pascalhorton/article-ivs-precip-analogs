@@ -495,6 +495,18 @@ The most often used analogy criteria in AMs are the Root Mean Squared Error (RMS
 	\item \textbf{DMV}: absolute difference in mean value. This is also nonspatial as the means are processed over the spatial window before comparison.
 \end{itemize}
 
+\subsubsection{Experiments}
+\label{experiments}
+
+The input variables selection with GAs has been organized in sequential steps:
+
+\begin{enumerate}
+	\item First, GAs were used to identify the single best predictor variable and its associated analogy criteria that best explains precipitation for each of the 25~catchments. This assessment has been done using both ERA-I and CFSR independently, and by performing six optimizations per catchments and dataset with different mutation operators. The objective of using two reanalyses is to analyze the consistency and eventual differences of the variables selection between two datasets.
+	\item Then, as AMs can be characterized by different structures (levels of analogy and number of predictors), the second experiment aimed at assessing the skill associated with different structures and the ability of GAs to deal with them. We considered first one to four levels of analogy, with one to four predictors per level. For each of these 16 structures, five optimizations were performed with different mutation operators. As this assessment leads to 80~optimizations per catchments, it was performed on four catchments (L'Allaine (1), Sitter (15), Doveria (19), Flaz (25)). These were selected in order to maximize the diversity of climatic influences represented. A complementary analysis was performed on two catchments (L'Allaine (1), Doveria (19)) to explore the use of up to eight predictors on one and two levels of analogy. It should be mentioned here that during an optimization, the GAs can turn off a level of analogy by setting the same number of analogs to extract on two successive levels of analogy. Similarly, the weights of some predictors can be nulled. Thus, even though the structure is provided to the GAs, it can still evolve to a simpler version. This experiment also allowed comparing the performance of the mutation operators for different method complexities.
+	\item The third experiment consisted in using three AM structures (1 level of analogy x 8 predictors, 1 x 12, and 2 x 6), based on the results of the previous experiment, and optimize the methods for each catchment. Also based on the previous experiment, only the chromosome of adaptive search radius has been used.
+	\item Finally, due to some issues with certain variables of ERA-I, the previous experiment was repeated using ERA5 and a single structure (1 x 12). The resolution of ERA5 was decreased to 0.5\degree for reasons of processing time. This experiment is not to be considered as a full exploration of ERA5 as it builds on the results obtained for ERA-I. Thus, a smaller selection of variables were assessed, according to the results obtained with ERA-I. Also, only the S0, S1, and S2 analogy criteria were considered and the potential domains were slightly reduced (latitudes=[39, 55], longitudes=[-4, 20]). If previously weights could be null for a predictor, a minimum of 0.01 was here enforced. Finally, some predictors, often selected in the previous experiment, were forced: W700 (S0 criterion), CAPE (S0 criterion), TCW (S0 or S1 criteria); leaving 9 predictors unconstrained.
+\end{enumerate}
+
 
 \section{Results}
 \label{results}
