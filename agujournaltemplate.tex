@@ -179,10 +179,13 @@ The questions we sought to address are: are GAs able to select both the meteorol
 The paper is organized as follows. Section \ref{data} describes the datasets used for predictors and predictands. Section \ref{methods} presents the principles of AMs and the characteristics of the GAs implementation. Section \ref{software} describes the software used as well as the modifications that were necessary. Section \ref{setup} provides the experiment setup details with the selected meteorological variables and analogy criteria. Section \ref{results} presents the results of different analyses, such as the selection of the best predictor variable, the relevance of different AM structures, and the skill of the optimized methods. Finally, section \ref{conclusions} summarizes the main contributions of the work and open perspectives for applications of the developed approach.
 
 
-\section{Data}
+\section{Material and methods}
+\label{material_methods}
+
+\subsection{Data}
 \label{data}
 
-\subsection{Precipitation Data}
+\subsubsection{Precipitation Data}
 \label{precip}
 
 The precipitation data considered is the RhiresD gridded dataset provided by MeteoSwiss. It is a daily aggregation (from 06:00~UTC of day D to 06:00~UTC of day D+1) at a 2~km resolution, available since 1961. It is produced by an interpolation scheme between gauging stations \cite{Frei1998}. The gridded data was here aggregated on catchments of about 200~km$^2$ (Table \ref{catchments}). These catchments were chosen to cover the different climatic regions of Switzerland \cite{Schuepp1980}, as illustrated in Fig.~\ref{map}.
@@ -236,7 +239,7 @@ The precipitation data considered is the RhiresD gridded dataset provided by Met
 \end{table}
 
 
-\subsection{Reanalysis Datasets}
+\subsubsection{Reanalysis Datasets}
 \label{reanalyses}
 
 This work takes place in the context of the perfect prognosis framework, where the predictors are considered relatively close to the actual states of the atmosphere. As often done in this context, we used variables provided by global reanalyses. These are produced using a single version of a data assimilation system coupled with a forecast model constrained to follow observations. However, homogeneity in time is a challenge due to significant changes in observing systems. Because of these discontinuities in the available observations, some variables from the reanalyses, such as precipitation and evaporation are to be used with great caution \cite{Kobayashi2015}. Moreover, even though most reanalyses provide good quality data over Europe, differences still exist and the choice of the reanalysis dataset can lead to differences in the skill score of the AM that can be larger than the choice of the predictor variables \cite{Horton2018b}. Thus, it was considered advisable to test some of the following analyses with another reanalysis to assess the robustness of the selected variables.
@@ -245,11 +248,8 @@ The main reanalysis used in this work is ERA-Interim \cite<ERA-I,>{Dee2011a}, wh
 
 The Climate Forecast System Reanalysis \cite<CFSR,>{Saha2010a}, provided by NCEP, was also used for the first analysis, which consisted in the selection of the single best predictor for each catchment. The model used to produce CFSR has a horizontal resolution of T382 (about 38~km) and 64 levels on sigma-pressure hybrid vertical coordinates. The period covered is from 1979 onward and the output variables have a spatial resolution of 0.5\degree.
 
-Finally, ERA5 \cite{Hersbach2019} was finally used for the last analysis as it provides more variables and a higher spatial (0.25\degree) and temporal resolution (hourly, but considered here at a 3-hrly time step). ERA5 assimilates significantly more data than ERA-I, and provides, among others, more consistent sea surface temperature and sea ice, an improved representation of tropical cyclones, a better balance of evaporation and precipitation, and improved soil moisture. ERA5 also relies on more appropriate radiative forcing and boundary conditions (e.g., changes in greenhouse gases, aerosols, SST, and sea ice).
+Finally, following some issues with ERA-I radiation data, ERA5 \cite{Hersbach2019} was used for the last analysis. ERA5 provides more variables and a higher spatial (0.25\degree, but used here at 0.5\degree) and temporal resolution (hourly, but used here at a 3-hrly time step). ERA5 assimilates significantly more data than ERA-I, and provides, among others, more consistent sea surface temperature and sea ice, an improved representation of tropical cyclones, a better balance of evaporation and precipitation, and improved soil moisture. ERA5 also relies on more appropriate radiative forcing and boundary conditions (e.g., changes in greenhouse gases, aerosols, SST, and sea ice).
 
-
-\section{Methods}
-\label{methods}
 
 \subsection{Analog Methods}
 \label{ams}
@@ -312,7 +312,7 @@ A conditioning by variables describing the atmospheric circulation, often the ge
 	S1=100 \frac {\displaystyle \sum_{i} \vert \Delta\hat{z}_{i} - \Delta z_{i} \vert}
 	{\displaystyle \sum_{i} max\left\lbrace \vert \Delta\hat{z}_{i} \vert , \vert \Delta z_{i} \vert \right\rbrace }
 \end{equation}
-where $\Delta \hat{z}_{i}$ is the gradient between the \textit{i}th pair of adjacent points from the geopotential field of the target situation, and $\Delta z_{i}$ is the corresponding observed geopotential gradient in the candidate situation. The differences are processed separately in both directions. The smaller the S1 values, the more similar the pressure fields.
+where $\Delta \hat{z}_{i}$ is the gradient between the \textit{i}th pair of adjacent points from the geopotential field of the target situation, and $\Delta z_{i}$ is the corresponding observed geopotential gradient in the candidate situation. The differences are processed separately in both directions. The smaller the S1 values, the more similar the pressure fields. S1 = 0 for similar fields, S1 = 100 for independent fields and S1 = 200 for opposing fields.
 
 AMs are made of a stepwise selection with several consecutive levels of analogy subsampling a lower number of analog situations from the precedent level of analogy, and based on other variables. For example, \citeA{Bontron2004} introduced a second level of analogy based on a moisture index that is the product of the relative humidity at 850~hPa and the total precipitable water. Other consecutive works selected different pressure levels or added a wind component to the moisture index \cite{Marty2010, Horton2018a}. \citeA{BenDaoud2016} inserted an additional level of analogy between the circulation and the moisture analogy based on the vertical velocity at 850~hPa and named it "SANDHY" for Stepwise Analog Downscaling method for Hydrology \cite{BenDaoud2016, Caillouet2016}. For other predictors than the geopotential height, classic criteria representing Euclidean distances between grid point values are used: Mean Absolute Error (MAE) and Root Mean Squared Error (RMSE), the latter being used most often.
 
@@ -342,7 +342,7 @@ during which the magnitude of the research varies and $w$ is a chosen threshold 
 The non-uniform mutation \cite{Michalewicz1996} aims at reducing the magnitude of the search in the parameters space with the evolution of the population in order to transition from exploration of the whole parameters space to exploitation of local solutions. This operator has three controlling parameters, which makes it difficult to control, and for this reason it is present with three different configurations in the selected presets. The multiscale mutation considers both exploration and exploitation in parallel. It has no controlling parameters and present no evolution during the optimization. The chromosome of adaptive search radius was introduced by \citeA{Horton2017a} and is inspired by the non-uniform mutation. It takes an auto-adaptive approach by adding two chromosomes, one for the mutation rate, and one for the control of the search magnitude \cite<see details in>{Horton2017a}. It has therefore no controlling parameters and is thus easier to use. 
 
 
-\section{Software}
+\subsection{Software}
 \label{software}
 
 The optimization of AMs with GAs is implemented in the open source AtmoSwing software \cite{Horton2019} that has been used for this work. AtmoSwing is written in object-oriented C++ and has been optimized for computational performance. It scales well on a HPC infrastructure as the different members of the GAs populations, i.e. the various parameter sets, can be assessed in parallel using different independent threads. However, due to the increasingly large number of assessment needed by GAs with the increasing complexity of the problem, a further reduction in processing time became necessary. 
@@ -351,7 +351,7 @@ A first attempt was based on storing the whole history of the optimization in me
 
 
 
-\subsection{GPU processing}
+\subsubsection{GPU processing}
 
 Despite being a simple method, the AM require many comparisons of gridded fields for its calibration. For example, this work used a 24-years calibration period. For each target day, a gridded predictor needs to be compared to about 2820 candidate situations (on a 120-days temporal window, minus 60 days in the target year). Over the full calibration period, this amounts to about $24.7\cdot10^6$ field comparisons per predictor of the first level of analogy. Here, one optimization required in average about 200 generations made of 2000 individuals, which brings the average number of grid comparisons to about $1\cdot10^{13}$ per predictor of the first level of analogy. Using profilers, the comparison of the gridded predictors -- the calculation of the analogy criteria -- was clearly identified as the most time-consuming task, despite the use of the efficient linear algebra library Eigen 3 \cite{Guennebaud2010}.
 
@@ -364,12 +364,12 @@ Threads on the GPU are organized in blocks dynamically defined, sizing from 32 t
 Results of a benchmark experiment can be found in Appendix A. The calculations on the GPU were 13 times faster in average, and up to a maximum of 38 times faster (5.2~sec instead of 3.3~min).
 
 
-\section{Experiment Setup}
+\subsection{Experiments Setup}
 \label{setup}
 
 The experiment has been conducted on a 30-year period, from 1981 to 2010, divided into a calibration period (CP) and an independent validation period (VP). In order to reduce the impact of potential inhomogeneities in the time series, the selection of the VP was evenly distributed over the entire series \cite<as in>[]{BenDaoud2010}. A total of 6 years was considered for the VP by selecting 1 year out of every 5 (explicitly: 1985, 1990, 1995, 2000, 2005, 2010). The archive period (AP), where the analog dates are being retrieved, is the same as the CP. The VP is also excluded from the AP (days from the VP were never used as candidate situations for the selection of analogs), as well as a period of $\pm30$ days around the target date. Unless stated otherwise, all results are presented for the VP. Finally, a test period (TP), from 2011 to 2018, was used to asses the final results. 
 
-All parameters of the method were optimized by the GAs. Only the structure of the AM (number of level of analogy and number of predictors) was not optimized. Optimizing the structure would probably be quite a dangerous strategy as the optimization would likely drift in the overfitting area. Different structures were tested in section \ref{structures}. For each level of analogy and each predictor, the following parameters were optimized within the corresponding ranges:
+All parameters of the method were optimized by the GAs. Only the structure of the AM (number of level of analogy and number of predictors) was not optimized. Different structures were tested in section \ref{structures}. For each level of analogy and each predictor, the following parameters were optimized within the corresponding ranges:
 
 \begin{itemize}		
 	\item Meteorological variables: see section \ref{variables}.
@@ -377,7 +377,7 @@ All parameters of the method were optimized by the GAs. Only the structure of th
 	\item Hours of the day: from day D 0:00~UTC to D+1 6:00~UTC (c.f. precipitation accumulation period, sect \ref{precip})
 	\item Spatial windows (domains): latitudes=[35, 55], longitudes=[-10, 20]. The spatial windows differ between predictors, even in the same level of analogy.
 	\item Analogy criteria: see section \ref{criteria}.
-	\item Weights: [0, 1] with a precision of 0.05. The optimizer can turn off a variable by setting its weight to zero.
+	\item Weights: [0, 1] with a precision of 0.01 (0.05 for experiment 2). The optimizer can turn off a variable by setting its weight to zero.
 	\item Number of analogs: varies according to the structure, but with an overall range of [5, 300] and a step of 5. The optimizer can turn off a level of analogy by setting its number of analogs to the same value as the previous level of analogy.
 \end{itemize}
 
@@ -390,7 +390,7 @@ The CRPS \cite<Continuous Ranked Probability Score;>{Brown1974, Matheson1976, He
 where $H(y-y_{i}^{0})$ is the Heaviside function that is null when $y-y_{i}^{0}<0$, and has the value 1 otherwise; the better the prediction, the lower the score.
 
 
-\subsection{Meteorological Variables}
+\subsubsection{Meteorological Variables}
 \label{variables}
 
 The meteorological variables were considered for different types of vertical vertical levels: surface / entire atmosphere, pressure levels (1000, 950, 900, 850, 800, 700, 600, 500, 400, 300, 200~hPa), potential temperature levels (290, 300, 310, 320, 330, 350, 400~K), and potential vorticity levels. The selected variables are listed in Table \ref{list_variables}. All the variables and levels are mixed so that the optimization can pick any variable on any level type and value, as long as it is available. Precipitation variables from reanalyses were not considered as potential predictors, as they strongly depend on the model physics \cite{Rienecker2011} and have significant biases that are not well balanced by the downscaling procedure \cite{Dayon2015}. 
@@ -468,14 +468,14 @@ The variables were standardized on the fly by AtmoSwing when loaded from files. 
 \end{table}
 
 
-\subsection{Analogy Criteria}
+\subsubsection{Analogy Criteria}
 \label{criteria}
 
 The most often used analogy criteria in AMs are the Root Mean Squared Error (RMSE) and the Teweles--Wobus criterion (S1, see section \ref{ams}). Other criteria that are not usually used, and some of which are new, were added to the pool that the GAs can use. The selection is the following:
 
 \begin{itemize}
 	\item \textbf{RMSE}: the Root Mean Squared Error.
-	\item \textbf{MD}: the Mean Absolute Difference. Differs from the RMSE in that the differences are not squared.
+	\item \textbf{MD}: the Mean Absolute Difference, or Mean Absolute Error. Differs from the RMSE in that the differences are not squared.
 	\item \textbf{S1}: the Teweles--Wobus index as provided by Eq. \ref{eq:S1} from section \ref{ams}. It consists in a comparison of the gradients. 
 	\item \textbf{S2}: inspired by the Teweles--Wobus index, we introduced a new criteria based on the same approach but using the second derivative of the fields instead of the gradients:
 	\begin{equation}
@@ -543,7 +543,7 @@ The input variables selection with GAs has been organized in sequential steps:
 	\label{fig_criteria}
 \end{figure}
 
-\subsection{Assessing AM Structures}
+\subsection{Assessment of AM Structures}
 \label{structures}
 
 \todo[inline]{matrix of n levels of analogy x n predictors}
@@ -566,28 +566,19 @@ The results also depicted significant differences between the mutation operators
 \end{figure}
 
 
-\subsection{Best Variables Combination}
+\subsection{Full optimization}
 \label{best_multi}
 
-* weight: iteration="0.01"
-* only the chromosome of adaptive search radius
+
+* variables only shown if weight >= 5\%
 
 
 \todo[inline]{optimize with relevant structure for all catchments. remove criteria and variables that were not selected before ? Adjust max domain ?}
 \todo[inline]{try to build 1 common AM for all catchments (same predictors, different weights)}
-\todo[inline]{compare skill with existing AMs}
 \todo[inline]{distribution of the weights?}
-\todo[inline]{distribution of the hours?}
+
 
 Issue with radiation data: \cite{Boilley2015}.
-
-\begin{figure}[hbt]
-	\noindent\makebox[\textwidth]{
-		\includegraphics[width=160mm]{figures/multiple-variables-structures.pdf}
-	}
-	\caption{Assessed AM structures.}
-	\label{fig_multiple_variables_structures}
-\end{figure}
 
 \begin{figure}[hbt]
 	\noindent\makebox[\textwidth]{
