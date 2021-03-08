@@ -23,6 +23,7 @@
 \usepackage{placeins}
 \usepackage{multirow}
 \usepackage{setspace}
+\usepackage{float}
 
 \linenumbers
 %\onehalfspacing
@@ -394,7 +395,7 @@ The CRPS \cite<Continuous Ranked Probability Score;>{Brown1974, Matheson1976, He
 	\label{eq:CRPS}
 	CRPS_{i} = \int_{0}^{+\infty} \left[ F_{i}(y)-H_{i}(y-y_{i}^{0})\right]^{2} dy
 \end{equation}
-where $H(y-y_{i}^{0})$ is the Heaviside function that is null when $y-y_{i}^{0}<0$, and has the value 1 otherwise; the better the prediction, the lower the score.
+where $H(y-y_{i}^{0})$ is the Heaviside function that is null when $y-y_{i}^{0}<0$, and has the value 1 otherwise; the better the prediction, the lower the score. The CRPS is known to be mainly influenced by larger values, thus by heavy precipitation events here.
 
 
 \subsubsection{Meteorological Variables}
@@ -521,16 +522,13 @@ The input variables selection with GAs has been organized in sequential steps:
 \subsection{Best Single Variables}
 \label{best_single}
 
-\todo[inline]{selected variables + analogy criteria}
-\todo[inline]{selected domains}
-\todo[inline]{illustrate e.g. S2 for 1 event (maps)}
-
+The first experiment consisted in using GAs to select the best predictor variable and analogy criterion for each catchment. The selection has been performed first on ERA-I (Fig. \ref{fig_best_era_int}) but also on CFSR for comparison (Fig. \ref{fig_best_cfsr}), with six optimizations per catchment and dataset. One of the first element that can be seen for both datasets is the dominance of the S0 criterion followed by S1 and S2 in different order (Fig. \ref{fig_criteria}). The other analogy cirteria were rarely selected, if not at all. This is also true for RMSE, which is commonly used in analog methods. The GAs could achieve a better skill score by using S0 as a metric for the Euclidian distance between the predictor fields. This result is further discussed in Sect. \ref{discussion_S0}.
 
 \begin{figure}[hbt]
 	\noindent\makebox[\textwidth]{
 		\includegraphics[width=170mm]{figures/single-variables-ERA-I.pdf}
 	}
-	\caption{Selected best variable for ERA-INT.}
+	\caption{Selected best variable (in ordinate) from ERA-INT and analogy criterion for the 25 catchments (in abscissa). The colors represent the analogy criteria and the size of the dots are proportional to the skill score of the resulting method (larger dots are better), within the 5\% range of the best result. Parameter sets performing below this threhold were excluded.}
 	\label{fig_best_era_int}
 \end{figure}
 
@@ -538,7 +536,7 @@ The input variables selection with GAs has been organized in sequential steps:
 	\noindent\makebox[\textwidth]{
 		\includegraphics[width=170mm]{figures/single-variables-CFSR.pdf}
 	}
-	\caption{Selected best variable for CFSR.}
+	\caption{Same as Fig. \ref{fig_best_era_int} but for CFSR.}
 	\label{fig_best_cfsr}
 \end{figure}
 
@@ -546,70 +544,101 @@ The input variables selection with GAs has been organized in sequential steps:
 	\noindent\makebox[\textwidth]{
 		\includegraphics[width=90mm]{figures/criteria.pdf}
 	}
-	\caption{Selected best criteria.}
+	\caption{Frequency of the criteria selection.}
 	\label{fig_criteria}
 \end{figure}
+
+\begin{figure}[hbt]
+	\noindent\makebox[\textwidth]{
+		\includegraphics[width=130mm]{figures/map-variables.pdf}
+	}
+	\caption{Map of the best variables for ERA-I for each catchment.}
+	\label{fig_map_variables}
+\end{figure}
+
+The results of the variables selection show some variability even for a single catchment. However, these different settings show very similar skill scores with sometimes unsignificant differences. The CRPS is mainly influenced by heavy precipitation events, which here drove the selection of the predictor variables. Different meteorological settings can lead to heavy precipitation for a particular region, and thus some variables can well explain certain events, while others can better predict another sample of events. Although GAs can, in theory, identify the global optimum, this search is extremely time consuming for such complex problems and we stop here the optimizations at a good-enough solution. These aspects explain the variability that we can see in the results. Moreover, this variability can be seen in a positive way as it provides information about alternative variables that have almost the same predictive skills.
+
+Figures \ref{fig_best_era_int} and \ref{fig_best_cfsr} also show some preferences for certain variables that changes from one region to another. Figure \ref{fig_map_variables} illustrates this information spatially for ERA-I variables. In terms of similarities, the vertical velocity (W) at 700 and 800~hPa is the most often selected variable for both datasets, when compared by means of the S0 criteria. Vertical velocity at these levels is typically associated with precipitation generation. The three catchments in the Southern Alps climatic region (19, 20, 21) have clear preference for Z (with the S1 criterion) as the best single predictor from ERA-I, which is not so clear with CFSR. Heavy precipitation events in this region are mostly due to orographic effects related to sustained southerly circulations \cite{Massacand1998}. Other regional clusters can be observed using ERA-I, such as V (with S1) in the eastern part of Switzerland, STR(D) in northern Switzerland, and Z assessed in terms of the second derivative (S2) for several catchments at similar latitudes. The second derivative of Z is also often selected for CFSR. A variable from CFSR that is often selected, and which is not directly provided by ERA-I, is the cloud water (CWAT). A general discussion on the meteorological processes in given in Sect. \ref{discussion_meteo}.
+
 
 \subsection{Assessment of AM Structures}
 \label{structures}
 
-\todo[inline]{matrix of n levels of analogy x n predictors}
-\todo[inline]{assess gains vs overfitting}
-\todo[inline]{assess most performing GAs operators}
-
-
-
-The results also depicted significant differences between the mutation operators (Sect. \ref{gas}). The chromosome of adaptive search radius (option \#1) resulted in the best performing parameters sets 76.3\% of the time for the calibration period, and 62.5\% of the time for the validation period (Fig. \ref{fig_mutation_operators_perfs}).  The second best is the non-uniform mutation with a mutation probability ($p_{mut}$) of 0.1 (option \#4) with a success rate of 11.3\% for the calibration period and 21.3\% for the validation period. However, the same operator with a  mutation probability ($p_{mut}$) of 0.2 (option \#5; $G_{m,r}$=100) is the worst performing option, with a success rate of 1.3\% for the calibration period and 2.5\% for the validation period. This quite well illustrate the difficulty of tuning such operators and the risk of a badly-parametrized mutation operator and the benefit of a auto-adaptive operator such as the chromosome of adaptive search radius that has no controlling parameter. Moreover, this operator was also usually performing better for more complex structures of the AM.
-
-
-
+The analysis of different structures of the AM (Sect. \ref{experiments}) aims at identifying the best performing structures, i.e. the optimal number of levels of analogy and number of predictors. The initial intent was to assess the gain in skill for the validation period with increasing complexity, while expecting the number of levels of analogy to increase the skill up to a certain plateau on the validation period. However, the structures were often simplified by the GAs by setting the same number of analogs to two consecutive levels of analogy, such as that no solution ended up with the structure 4~x~4 (four levels of analogy with four predictors each). The best performing methods on the validation period were always made of one or two levels of analogy (Figure \ref{fig_structures}). When compared with other existing methods that have up to four levels of analogy (Sect. \ref{ams}), a notable difference here is that the predictors are weighted, which is not the case in the reference methods, and which certainly helps in combining different variables in the same level of analogy. The methods with fewer levels of analogy present less of a hierarchy among the predictors, but might then be less contrained by circulation variables when other variables have a greater importance. However, we cannot directly draw the conclusion here that two levels of analogy is the maximum to be considered, as it might also result from difficulties for the GAs to handle several levels of analogy.
 
 \begin{figure}[hbt]
 	\noindent\makebox[\textwidth]{
 		\includegraphics[width=180mm]{figures/ams-structures.pdf}
 	}
-	\caption{Selected best variable for CFSR.}
+	\caption{CRPS scores obtained for different AM structures with up to four levels of analogy for four catchments in Switzerland. Lower CRPS (yellow) represents a better skill.}
 	\label{fig_structures}
 \end{figure}
+
+The results also depicted significant differences between the mutation operators (Sect. \ref{gas}). The chromosome of adaptive search radius (option \#1) resulted in the best performing parameter sets 76.3\% of the time for the calibration period, and 62.5\% of the time for the validation period (Fig. \ref{fig_mutation_operators_perfs}).  The second best is the non-uniform mutation with a mutation probability ($p_{mut}$) of 0.1 (option \#4) with a success rate of 11.3\% for the calibration period and 21.3\% for the validation period. However, the same operator with a  mutation probability ($p_{mut}$) of 0.2 (option \#5; $G_{m,r}$=100) is the worst performing option, with a success rate of 1.3\% for the calibration period and 2.5\% for the validation period. This quite well illustrate the difficulty of tuning such operators and the risk of a badly-parametrized mutation operator and the benefit of a auto-adaptive operator such as the chromosome of adaptive search radius that has no controlling parameter. Moreover, this operator was also usually performing better for more complex structures of the AM.
 
 
 \subsection{Full optimization}
 \label{best_multi}
 
+\subsubsection{Using variables from ERA-I}
 
-* variables only shown if weight >= 5\%
+Based on the previous results, three AM structures were selected: 1 level of analogy x 8 predictors, 1~x~12, and 2~x~6 (Sect. \ref{experiments}). Two optimizations were performed by structure and catchment using only the chromosome of adaptive search radius because of its higher performance. The skill of the 2~x~6 structure was usually lower (Figure \ref{fig_scores}) and the structure was simplified to 1~x~6 for several catchments. The 2~x~6 structures showed higher skill than 1~x~6 (not shown). Thus, only structures with a single level of analogy (1~x~8 and 1~x~12) were further analyzed here. 
 
 
-\todo[inline]{optimize with relevant structure for all catchments. remove criteria and variables that were not selected before ? Adjust max domain ?}
-\todo[inline]{try to build 1 common AM for all catchments (same predictors, different weights)}
-\todo[inline]{distribution of the weights?}
-\todo[inline]{assess on the test period}
-
-Issue with radiation data: \cite{Boilley2015}.
-
-\begin{figure}[hbt]
+\begin{figure}[H]
+	\vspace{-1cm}
 	\noindent\makebox[\textwidth]{
 		\includegraphics[width=180mm]{figures/multiple-variables.pdf}
 	}
-	\caption{Selected 8/12 variables for the different catchments.}
+	\vspace{-0.8cm}
+	\caption{Selected variables for the 1~x~8 and 1~x~12 structures for the different catchments. The colors reresent the analogy criteria and the size of the circle is proportional to the weight given to the predictor within the range [0.02, 0.2]. Variables that were never selected with a weight equal or larger than 0.05 are not represented.}
 	\label{fig_multiple_variables}
 \end{figure}
 
-\begin{figure}[hbt]
+\begin{figure}[H]
 	\noindent\makebox[\textwidth]{
 		\includegraphics[width=160mm]{figures/multiple-variables-summary.pdf}
 	}
-	\caption{Most selected variables and their weighting.}
-	\label{fig_variables_weights}
+	\caption{Statistics of the 30 most selected variables for the 1~x~8 and 1~x~12 structures for the different catchments (100 optimizations) along with the analogy criteria, the reference hour (30 = next day at 06:00~UTC; some radiation variables were considered at 15:00~UTC) and the spatial windows (longitudes and latitudes). The extent of Switzerland is shown in gray on the plots of the spatial windows.}
+	\label{fig_stats_params}
 \end{figure}
 
-\begin{figure}[hbt]
-	\noindent\makebox[\textwidth]{
-		\includegraphics[width=160mm]{figures/multiple-variables-structures.pdf}
-	}
-	\caption{Assessed AM structures.}
-	\label{fig_multiple_variables_structures}
-\end{figure}
+%\FloatBarrier
+
+Figure \ref{fig_multiple_variables} shows the different variables selected for each catchment along with the analogy criteria (color) and the weights (size). Figure \ref{fig_stats_params} synthetizes the selection of the 30 best variables and the associated analogy criteria, reference hours and spatial windows. The weights present different distributions between variables, but they are not ranked similarly to the frequency of selection (not shown).
+
+These results show again a strong dominance of the S0, S1 and S2 analogy criteria, with the others being only marginally selected, including RMSE. S0 is most often selected and represents a comparison of the grid values. The properties of S0 are further investigated in Sect. \ref{discussion_S0}.  
+
+The vertical velocity (W) at 700~hPa is the most selected variable, even for the catchments that were selecting another best single variable (Sect. \ref{best_single}). It shows some variations with multiple selections of W at 600 or 800~hPa. Catchments with higher elevation and located at the southern part of the country also selected W at 500~hPa or even higher.
+
+The surface solar radiation downwards (SSRD) is the second most selected variable and is mainly relevant when compared in terms of gradients (S1) rather than absolute values. Other radiation variables, such as the surface thermal radiation downwards (STRD) and the surface net thermal radiation (STR) occupy the fourth and fifth rank, but are mainly relevant when compared in terms of absolute values (S0), although there is a non-negligible percentage of the S1 criteria.
+
+CAPE is the third most selected variable and the total column water (TCW) is the sixth variable. At the nineth position comes the meridional wind at 10~m, but compared in a derived way using S1 or even S2. Then comes the meridional wind on the PV level. The 2~m temperature has the 12th position and is compared in terms of gradients (S1). Follow the geopotential height (Z) at 700 and 600~hPa compared primarily using the second derivatives of the fields (S2). SLP, a bit further, is also compared in terms of its second derivative. Other variables such as RH, PV, D, and U also populate the 30 best variables.
+
+The optimal spatial windows (Figure \ref{fig_stats_params}) cover Switzerland most of the time, with different extents depending on the variables. For example, while the medians of the optimal domains for W and CAPE are slightly larger than Switzerland, PV, which provides a synoptic information, is to be considered on a larger domain. The 2m temperature (T2m) depicts unsusual domains, quite large in terms of longitudes, and with the main body to the southern part of Switzerland, including a part of the northern mediterranean. Note here that SST was also in the pool of potential variables but has never been selected as relevant.
+
+The optimal reference hours show substantial variability between the predictor variables. At the lower part of the range, we can find TCW that is considered at best at the start of the precipitation accumulation period (06:00~UTC). The higher side of the range (06:00~UTC the next day; corresponding to the end of the accumulation period) has been favoured by the divergence (D at 285\degree K) and some low-level W (W900 and W950) or Z (Z900). One has to note here that the radiation variables used were cumulated variables which were not decomposed prior to the analysis. Thus, most of the selected reference time correspond to the start of the cumulation period, i.e. 15:00○~UTC.
+
+
+\subsubsection{Using variables from ERA5}
+
+Because of the issue with the cumulated radiation variables, and other issues with solar irradiation data in ERA-I \cite{Boilley2015}, it has been decided to perform some optimizations using ERA5 and a single structure (1~x~12). ERA5 also offers a 3-hourly time step, which might be relevant when considering radiation variables, and higher spatial resolution (considered here at 0.5\degree). The potential analogy criteria were limited to S0, S1 and S2, the spatial domains were slightly reduced, and the selection of some variables were forced (see Sect. \ref{experiments}).
+
+The variables that resulted as relevant with ERA-I were selected as potential predictors, thus decreasing the pool of potential variables. Also, potential temperature levels and PV levels were not considered further. However, cloud cover variables have been added to the potential predictors in order to assess if SSRD served as a proxy for cloud cover.
+
+
+\todo[inline]{add results when ready...}
+
+
+
+\subsubsection{Proposing an homogenized method}
+
+
+\todo[inline]{try to build 1 common AM for all catchments (same predictors, different weights)}
+
+
+\subsection{Skill scores}
+\label{skill_score}
 
 
 \begin{figure}[hbt]
@@ -619,6 +648,10 @@ Issue with radiation data: \cite{Boilley2015}.
 	\caption{Performance score of the different methods.}
 	\label{fig_scores}
 \end{figure}
+
+
+\todo[inline]{assess on the test period}
+
 
 
 \section{Discussion}
@@ -639,7 +672,7 @@ The S0 and S2 criteria suffer from the same issue than S1, which is that the den
 
 
 \subsection{Meteorological processes behind the selected variables}
-
+\label{discussion_meteo}
 
 
 \subsection{Computational burden}
