@@ -705,6 +705,7 @@ It seems thus that the asymetrical properties of $S_{0}$, $S_{1}$ and $S_{2}$ ar
 	\end{itemize}
 	\item Computational burden
 	\begin{itemize}
+		\item GPU brings significant time improvement, mainly for high-res data
 		\item work on a smaller calibration period
 		\item a lot of time spend on small precip values and 0s that have no impact on the CRPS
 	\end{itemize}
@@ -810,35 +811,33 @@ It seems thus that the asymetrical properties of $S_{0}$, $S_{1}$ and $S_{2}$ ar
 
 \section{Benchmarks of the GPU implementation}
 
-\begin{figure}
+The Google benchmark library was used to assess the processing time of different AM structures -- a single or two levels of analogy and up to four predictors per level -- along with various grid sizes. Figure \ref{cuda} shows the results for the analogy criterion $S_{1}$, with gradients being pre-processed using CPUs only (counted in the total time). The other analogy criteria showed similar results. The task consisted in extracting analogs for 32 years by using the other 31 years as archive for candidate situations, within a 120~days temporal window. This makes a total of $43.5\cdot10^6$ field comparisons per predictor of the first level of analogy.
+
+\begin{figure}[hbt]
 	\noindent\includegraphics[width=130mm]{figures/cuda-timing.pdf}
 	\caption{Processing time for the extraction of analogs over 32 years using the $S_{1}$ criteria for different grid sizes and various structures of AMs. The structures are represented by a LxP code, L being the number of levels of analogy, and P being the number of predictors per level. Time is given for the use of (s) standard CPUs and (c) CUDA on GPUs. Note the logarithmic axes.}
 	\label{cuda}
 \end{figure}
 
-The Google benchmark library was used to assess the processing time of different structures of the AM -- a single or two levels of analogy and up to four predictors per level -- along with various grid sizes. Figure \ref{cuda} shows the results for the analogy criterion $S_{1}$, with gradients being pre-processed using CPUs only (counted in the total time). The other analogy criteria showed similar results. The task consisted in extracting analogs for 32 years by using the other 31 years as archive for candidate situations, within a 120~days temporal window. This makes a total of $43.5\cdot10^6$ field comparisons per predictor of the first level of analogy.
-
-The experiment was conducted on the cluster of the University of Bern, using the same node for the whole benchmark, processing on a single NVIDIA GeForce RTX 2080 graphics card. The processing on the CPU -- using the linear algebra library Eigen 3 \cite{Guennebaud2010} -- was done on a single thread. Although AtmoSwing can parallelize the calculation of the analogy criteria on multiple CPU threads, it is using a single thread for this task when optimizing with GAs because it parallelizes the evaluation of the different individuals on multiple threads. Now, with the use of GPUs, it still assesses the individuals on multiple CPU threads, each of them being able to exploit a different GPU device for the calculation of the analogy criteria. It is thus parallelizing both on CPUs and GPUs.
+The experiment was conducted on the cluster of the University of Bern, using the same node for the whole benchmark, and processing on a single NVIDIA GeForce RTX 2080 graphics card. The processing on the CPU -- using the linear algebra library Eigen 3 \cite{Guennebaud2010} -- was done on a single thread. Although AtmoSwing can parallelize the calculation of the analogy criteria on multiple CPU threads, it is using a single thread for this task when optimizing with GAs because it parallelizes the evaluation of the different individuals on multiple threads. Now, with the use of GPUs, it still assesses the individuals on multiple CPU threads, each of them being able to exploit a different GPU device for the calculation of the analogy criteria. It is thus parallelizing both on CPUs and GPUs.
 
 The benchmark (Fig. \ref{cuda}) shows that the calculations on the GPU are systematically faster than those on the CPU, and this difference increases with the number of grid points. The calculations on the GPU were 13 times faster in average, and up to a maximum of 38 times faster (5.2~sec instead of 3.3~min) when using 2048 points. Model outputs and reanalyses show an increase in spatial resolution and thus this will become increasingly important. When using CPU only, the addition of a predictor in the first level of analogy has a much higher impact on time than the addition of a second level of analogy. This is explained by the fact that it needs to process the analogy criteria for the whole archive for each predictor of the first level of analogy, while the second level has only few candidate situations to assess.
-
-%TODO: add comparison with multiple CPUs
 
 
 \section{Performance of the mutation operators}
 
+Figure \ref{fig_mutation_operators_perfs} shows the performance of the five mutation operators (Sect. \ref{gas}) for different AM structures and the different catchments considered in Sect. \ref{structures}. Overall, the chromosome of adaptive search radius has a success rate of 76.25\% in calibration and 62.5\% in validation, the multiscale mutation 7.5\% and 8.75\% respectively, and the non-uniform mutation with its different options: (3) 11.25\% and 10\%, (4) 11.25\% and 21.25\%, and (5) 1.25\% and 2.5\% respectively.
 
-Success percentages:
-calib: [76.25  7.5  11.25 11.25  1.25]
-valid : [62.5   8.75 10.   21.25  2.5 ]
 
-\begin{figure}
+\begin{figure}[hbt]
 	\noindent\makebox[\textwidth]{
 		\includegraphics[width=170mm]{figures/gas-configs-ams-structures.pdf}
 	}
-	\caption{...}
+	\caption{Performance of the five mutation operators (Sect. \ref{gas}) for different AM structures and the different catchments considered in Sect. \ref{structures}. The values represent the number of optimizations for one mutation operator that resulted in the best performing AM. Results are shown for both calibration and validation. When multiple operators obtain the same skill score, they all get a point.}
 	\label{fig_mutation_operators_perfs}
 \end{figure}
+
+It is thus quite clear that the chromosome of adaptive search radius obtains better results, all the more so with more complex structures, i.e. more predictor variables. Although its success rate decreases a bit in validation, it remains much larger than the other options. The non-uniform mutation show great variability of performance depending on its options. 
 
 
 
