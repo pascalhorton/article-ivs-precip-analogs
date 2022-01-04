@@ -28,7 +28,6 @@
 \linenumbers
 %\onehalfspacing
 
-\usepackage{todonotes}
 %%%%%%%
 % As of 2018 we recommend use of the TrackChanges package to mark revisions.
 % The trackchanges package adds five new LaTeX commands:
@@ -156,7 +155,7 @@
 %% \begin{abstract} starts the second page
 
 \begin{abstract}
-\todo[inline]{To be written...}
+
 \end{abstract}
 
 %% ------------------------------------------------------------------------ %%
@@ -175,12 +174,11 @@ In the past, a semi-automatic sequential procedure \cite{Bontron2004, Radanovics
 
 The selection of predictors for precipitation prediction with AMs in Europe has been the focus of multiple studies aiming to improve prediction skills \cite{Obled2002, Bontron2004, Gibergans-Baguena2007,Radanovics2013, BenDaoud2016}. Thus, the relevant predictors are likely to be known nowadays and supported by expert knowledge. However, transferring AMs to a region with different climatic conditions, or to another predictand, would involve a reconsideration of the selected meteorological variables. This work aims to test a fully automatic optimization of all AM parameters, including the selection of the meteorological variables and even the analogy criteria, using GAs.
 
+IVS with GAs in other domains: Dheygere2003
+
 We seek to address the following questions: Are GAs able to select both the meteorological variables and the analogy criteria? Do these selections make sense in terms of meteorological processes? What are the strengths and limitations of such an approach? To compare with well-established AMs, daily precipitation in central Europe, specifically Switzerland, has been chosen as predictand. Also, as is often the case, the AMs were optimized in the perfect prognosis framework, using predictors from reanalyses. Nevertheless, this work's focus is more on the proof of concept of automatic input variable selection for AMs than the details of the obtained results for the case study.
 
 The paper is organized as follows. Section \ref{material_methods} describes the datasets, the fundamentals of AMs, the characteristics of the GAs implementation, the software used, and the experiment setup details. Section \ref{results} presents the results of different analyses, such as the selection of the best predictor variable, the relevance of different AM structures, and the skill of the optimized methods. Section \ref{discussion} develops on some findings of the work and the meteorological processes associated with the selected predictors. Finally, section \ref{conclusions} summarizes the main contributions of the work and open perspectives for applications of the developed approach.
-
-
-\todo[inline]{Add references to other IVS approaches}
 
 
 \section{Material and methods}
@@ -250,7 +248,7 @@ In the perfect prognosis framework the predictors are considered relatively clos
 
 The main reanalysis used in this work is ERA-Interim \cite<ERA-I,>{Dee2011a}, which is produced by the European Centre for Medium-Range Weather Forecasts (ECMWF) and covers the period from 1979 onward. The forecast model uses a hybrid sigma-pressure vertical coordinate on 60 layers and has a T255 horizontal resolution (about 79~km) and a 30~min time step. The output variables have a spatial resolution of 0.75\degree. The present work started before the release of ERA5, the successor of ERA-I.
 
-The Climate Forecast System Reanalysis \cite<CFSR,>{Saha2010a}, provided by NCEP, was used for the first experiment to compare the results obtained with ERA-I. The model used to produce CFSR has a horizontal resolution of T382 (about 38~km) and 64 levels on sigma-pressure hybrid vertical coordinates. The period covered is from 1979 onward, and the output variables have a spatial resolution of 0.5\degree.
+The Climate Forecast System Reanalysis \cite<CFSR,>{Saha2010a}, provided by NCEP, was used for the first experiment to compare the results obtained with ERA-I. The model used to produce CFSR has a horizontal resolution of T382 (about 38~km) and 64 levels on sigma-pressure hybrid vertical coordinates. The period covered is from 1979 to August 2019, and the output variables have a spatial resolution of 0.5\degree.
 
 Finally, due to some issues with ERA-I radiation data, ERA5 \cite{Hersbach2019} was used for the last analysis. ERA5 provides more variables and a higher spatial (0.25\degree, but used here at 0.5\degree) and temporal resolution (hourly, but used here at a 3-hourly time step). ERA5 assimilates significantly more data than ERA-I and provides, among others, more consistent sea surface temperature and sea ice, an improved representation of tropical cyclones, a better balance of evaporation and precipitation, and improved soil moisture. ERA5 also relies on more appropriate radiative forcing and boundary conditions (e.g., changes in greenhouse gases, aerosols, SST, and sea ice) \cite{Hersbach2019}.
 
@@ -326,25 +324,13 @@ The probabilistic prediction for the target day is then provided by the empirica
 \subsection{Genetic Algorithms}
 \label{gas}
 
-GA is a global optimization technique inspired by genetics, and natural selection \cite{Holland1992b}. It belongs to evolutionary algorithms and is composed of different operators such as natural selection, selection of couples, chromosome crossover, mutation, and elitism. These operators act on parameter sets of the problem to optimize by mixing, combinations, and random modifications. GA aims at combining, over time, the strength of different parameter sets and at exploring the parameters space while converging toward the global optimum. The optimization starts here with a set of 2000 random parameter sets (as defined in Sect. \ref{ams}) and is stopped when the best parameter set could not be improved after 30~iterations.
+GA is a global optimization technique inspired by genetics and natural selection \cite{Holland1992b}. It belongs to evolutionary algorithms and is composed of different operators such as natural selection, selection of couples, chromosome crossover, mutation, and elitism. These operators act on parameter sets of the problem to optimize by mixing, combinations, and random modifications. GA aims at combining, over time, the strength of different parameter sets and at exploring the parameters space while converging toward the global optimum. The optimization starts here with a set of 2000 random parameter sets (as defined in Sect. \ref{ams}) and is stopped when the best parameter set could not be improved after 30~iterations.
 
 A variant of genetic algorithms (GAs) has been tailored to optimize AMs by \citeA{Horton2017a}. All the method's parameters except for the meteorological predictor variables and the analogy criteria have already be successfully optimized using GAs \cite{Horton2018a}. The use of GAs provided for the first time an objective and global optimization of AMs, which resulted in gains in prediction skills. To bring the optimization further, the selection of the predictor variables and the analogy criteria were here performed by GAs.
 
-While the parameters optimized so far had a notion of continuity in the range of their values (e.g., location and size of the spatial windows, or the number of analogs), predictor variables or analogy criteria have no relationship among options. They are treated as arrays of independent values by the algorithm, and therefore the operators relying on a search radius in the parameters space \cite{Horton2017a} cannot be applied to them. Instead we use ... In addition to the increase in difficulty due to the higher number of parameters to optimize, this aspect is also likely to slow down the optimization.
+While the parameters optimized so far had a notion of continuity in the range of their values (e.g., location and size of the spatial windows, or the number of analogs), predictor variables or analogy criteria have no relationship among options. They are treated as arrays of independent values by the algorithm, and therefore the mutation operator relying on a search radius in the parameters space \cite{Horton2017a} cannot be applied to them. Instead, a simple random sampling was applied for these parameters when selected for mutation. In addition to the increase in difficulty due to the higher number of parameters to optimize, this aspect is also likely to slow down the optimization.
 
-The mutation operator was shown to have the largest impact on the success of the optimization \cite{Horton2017a}. Thus, as suggested in \citeA{Horton2017a}, five variants of this operator were used in parallel optimizations:
-
-\begin{enumerate}
-	\item Chromosome of adaptive search radius \cite{Horton2017a}
-	\item Multiscale mutation \cite{Horton2017a}
-	\item Non-uniform mutation ($p_{mut}$=0.1, $G_{m,r}$=50, $w$=0.1)
-	\item Non-uniform mutation ($p_{mut}$=0.1, $G_{m,r}$=100, $w$=0.1)
-	\item Non-uniform mutation ($p_{mut}$=0.2, $G_{m,r}$=100, $w$=0.1)
-\end{enumerate}
-
-where $p_{mut}$ is the mutation probability, $G_{m,r}$ is the maximum number of generations (G) during which the magnitude of the research varies and $w$ is a chosen threshold to maintain a minimum search magnitude when $G>G_{m,r}$.
-
-The non-uniform mutation \cite{Michalewicz1996} aims to reduce the magnitude of the search in the parameters space with the evolution of the population to transition from the exploration of the whole parameter space to the exploitation of local solutions. This operator has three controlling parameters, which makes it difficult to control, and for this reason, it is present with three different configurations in the selected presets. The multiscale mutation considers both exploration and exploitation in parallel. It has no controlling parameters and has no evolution during the optimization. The chromosome of adaptive search radius was introduced by \citeA{Horton2017a} and is inspired by the non-uniform mutation. It takes an auto-adaptive approach by adding two chromosomes, one for the mutation rate and one for controlling the search magnitude \cite<see details in>{Horton2017a}. Therefore, it has no controlling parameters, is thus easier to use, and automatically transition from the exploration phase to exploitation.
+The mutation operator was shown to have the largest impact on the success of the optimization \cite{Horton2017a}. Thus, as suggested in \citeA{Horton2017a}, five variants of this operator were used in parallel optimizations (see details in Appendix B): three variants of the non-uniform mutation \cite{Michalewicz1996}, the multiscale mutation \cite{Horton2017a}, and the chromosome of adaptive search radius \cite{Horton2017a}. The non-uniform mutation aims to reduce the magnitude of the search in the parameters space with the evolution of the population to transition from the exploration of the whole parameter space to the exploitation of local solutions. This operator has three controlling variables, which makes it difficult to fine-tune, and thus is used with three different configurations. The multiscale mutation considers both exploration and exploitation in parallel. It has no controlling parameters and has no evolution during the optimization. The chromosome of adaptive search radius was introduced by \citeA{Horton2017a} and is inspired by the non-uniform mutation. It takes an auto-adaptive approach by adding two chromosomes, one for the mutation rate and one for controlling the search magnitude \cite<see details in>{Horton2017a}. Therefore, it has no controlling parameters, is thus easier to use, and automatically transition from the exploration phase to exploitation.
 
 
 \subsection{Software}
@@ -359,7 +345,7 @@ A first attempt was based on storing the whole history of the optimization in me
 
 Despite being simple methods, AMs require many comparisons of gridded fields for their calibration. For example, this work used a 24-year calibration period. For each target day, a gridded predictor needs to be compared to about 2820 candidate situations (using a 120-day temporal window, minus 60 days in the target year that are excluded). Over the full calibration period, this amounts to about $24.7\cdot10^6$ field comparisons per predictor of the first level of analogy. Here, one optimization required in average about 200 generations made of 2000 individuals, which brings the average number of grid comparisons to about $1\cdot10^{13}$ per predictor of the first level of analogy. The comparison of the gridded predictors – i.e., the calculation of the analogy criteria -- was identified with profilers as the most time-consuming task, despite using the efficient linear algebra library Eigen 3 \cite{Guennebaud2010}.
 
-In order to reduce the processing time, computation using graphics processing units (GPUs) was implemented in AtmoSwing v.2.1.2 \cite{Horton2019b} for this study. The calculation of the analogy criteria has been written using NVIDIA's CUDA.
+In order to reduce the processing time, computation using graphics processing units (GPUs) was implemented for this study in a new release of AtmoSwing, v.2.1.2 \cite{Horton2019b}. The calculation of the analogy criteria has been written using NVIDIA's CUDA.
 
 Several implementations were tested, with the most successful aiming to reduce the data copy to the device while increasing the load of parallel processing. It consisted in copying the predictor data to the device and calling the kernel for every target date, thus assessing all candidates for that target date in one call. The main benefit of this variant is that it allows overlapping -- using streams -- the calculation of the analogy criteria on the GPU and other calculations on the CPU, such as the extraction of the indices corresponding to the candidate dates (using a temporal moving window of 120~days) and the sorting of the resulting analogy criteria.
 
@@ -371,7 +357,7 @@ Results of a benchmark experiment can be found in Appendix A. The GPU calculatio
 \subsection{Experiments Setup}
 \label{setup}
 
-The experiments have been conducted on a 30-year period, from 1981 to 2010, divided into a calibration period (CP) and an independent validation period (VP). To reduce the impact of potential inhomogeneities in the time series, the selection of the VP was evenly distributed over the entire series \cite<as in>[]{BenDaoud2010}. A total of 6 years was used for the VP by selecting one year out of every five (explicitly: 1985, 1990, 1995, 2000, 2005, 2010). The archive period (AP), where the analog dates are being retrieved, is the same as the CP. The VP is also excluded from the AP (days from the VP were never used as candidate situations for the selection of analogs), as well as a period of $\pm30$ days around the target date to exclude potential dependent meteorological situations. Unless stated otherwise, all results are presented for the VP. Finally, a test period (TP), from 2011 to 2018, was used to assess the final results. 
+The experiments have been conducted on a 30-year period, from 1981 to 2010, divided into a calibration period (CP) and an independent validation period (VP -- note that the years 2011-2018 were reserved for an additional test period, which was in the end not needed). To reduce the impact of potential inhomogeneities in the time series, the selection of the VP was evenly distributed over the entire series \cite<as in>[]{BenDaoud2010}. A total of 6 years was used for the VP by selecting one year out of every five (explicitly: 1985, 1990, 1995, 2000, 2005, 2010). The archive period (AP), where the analog dates are being retrieved, is the same as the CP. The VP is also excluded from the AP (days from the VP were never used as candidate situations for the selection of analogs), as well as a period of $\pm30$ days around the target date to exclude potential dependent meteorological situations. Unless stated otherwise, all results are presented for the VP.
 
 All parameters of the method were optimized by the GAs. Only the AM structure (number of levels of analogy and number of predictors) was not optimized. Different structures were tested in section \ref{structures}. For each level of analogy and each predictor, the following parameters were optimized within the corresponding ranges:
 
@@ -508,7 +494,7 @@ The input variables selection with GAs has been organized in sequential steps:
 	\item First, GAs were used to identify the single best predictor variables and their associated analogy criteria for each of the 25~catchments. This assessment has been performed using both ERA-I and CFSR independently, and by performing six optimizations per catchment and dataset with different mutation operators (the five variants but twice the chromosome of adaptive search radius). The goal of using two reanalyses is to analyze the consistency and eventual differences of the variables selection between two datasets.
 	\item Then, as AMs can be characterized by different levels of analogy and number of predictors, the second experiment aimed at assessing the skill associated with different structures and the ability of GAs to deal with them. We first considered one to four levels of analogy, with one to four predictors per level. For each of these 16 structures, five optimizations were performed with the different mutation operators. As this assessment requires 80~optimizations, it was performed on only four catchments (L'Allaine (1), Sitter (15), Doveria (19), Flaz (25)). These were selected in order to maximize the diversity of climatic conditions represented. A complementary analysis was performed on two catchments (L'Allaine (1) and Doveria (19)) to explore the use of up to eight predictors on one and two levels of analogy. It should be mentioned here that during the optimization, the GAs can turn off a level of analogy by setting the same number of analogs to extract on two successive levels of analogy. Similarly, the weights of some predictors can be set to zero. Thus, even though the structure is provided to the GAs, it can still evolve to a simpler version. This experiment also allowed comparing the performance of the mutation operators for different problem complexities.
 	\item The third experiment consisted in using three AM structures (1 level of analogy x 8 predictors, 1 x 12, and 2 x 6), based on the previous experiment results, to optimize the methods for each catchment. Only the chromosome of adaptive search radius has been used.\\
-	Finally, due to some issues with certain variables of ERA-I, the previous experiment was repeated using ERA5 and a single structure (1 x 12). The resolution of ERA5 was decreased to 0.5\degree\ for processing time reasons. This experiment should not be considered as a full exploration of ERA5 as it builds on the results obtained for ERA-I. Thus, a smaller selection of variables was assessed, according to the results obtained with ERA-I. Also, only the $S_{0}$, $S_{1}$, and $S_{2}$ analogy criteria were considered and the potential domains were slightly reduced (latitudes=[39, 55], longitudes=[-4, 20]). If previously weights could be null for a predictor, a minimum of 0.01 was here enforced. Finally, some predictors, often selected in the previous experiment, were forced: W700 (with $S_{0}$ criterion), CAPE (with $S_{0}$ criterion), TCW (with $S_{0}$ or $S_{1}$ criteria); leaving nine predictors unconstrained.
+	Finally, the previous experiment was repeated using ERA5 and a single structure (1 x 12). The resolution of ERA5 was decreased to 0.5\degree\ for processing time reasons. This experiment should not be considered as a full exploration of ERA5 as it builds on the results obtained for ERA-I. Thus, a smaller selection of variables was assessed, according to the results obtained with ERA-I. Also, only the $S_{0}$, $S_{1}$, and $S_{2}$ analogy criteria were considered and the potential domains were slightly reduced (latitudes=[39, 55], longitudes=[-4, 20]). If previously weights could be null for a predictor, a minimum of 0.01 was here enforced. Finally, some predictors, often selected in the previous experiment, were forced: W700 (with $S_{0}$ criterion), CAPE (with $S_{0}$ criterion), TCW (with $S_{0}$ or $S_{1}$ criteria); leaving nine predictors unconstrained.
 \end{enumerate}
 
 
@@ -552,9 +538,9 @@ The first experiment consisted in using GAs to select one predictor variable and
 	\label{fig_map_variables}
 \end{figure}
 
-The results of the variable selection show some variability even for a single catchment. However, these different parameters show similar skill scores with sometimes insignificant differences. The CRPS is mainly influenced by heavy precipitation events, which here drove the selection of the predictor variables. Several different meteorological situations can lead to heavy precipitation in a particular region, and thus some variables can well explain specific events, while others can better predict another sample of events. Although GAs can, in theory, identify the global optimum, this search is extremely time-consuming for such complex problems, and we stop here the optimizations at a good-enough solution. These aspects explain the variability that we can see in the results. Also, this variability can be seen in a positive way as it provides information about alternative variables that have almost the same predictive skills.
+The results of the variable selection show some variability even for a single catchment. However, these different selections show similar skill scores with sometimes insignificant differences. The CRPS is mainly influenced by heavy precipitation events, which here drove the selection of the predictor variables. Several different meteorological situations can lead to heavy precipitation in a particular region, and thus some variables can well explain specific events, while others can better predict another sample of events. Although GAs can, in theory, identify the global optimum, this search is extremely time-consuming for such complex problems, and we stop here the optimizations at a good-enough solution. These aspects explain the variability that we can see in the results. Also, this variability can be seen in a positive way as it provides information about alternative variables that have almost the same predictive skills.
 
-Figures \ref{fig_best_era_int} and \ref{fig_best_cfsr} also show that the variable selection can change from one region to another. Figure \ref{fig_map_variables} illustrates this information spatially for ERA-I variables. In terms of similarities, the vertical velocity (W) at 700 and 800~hPa is the most frequently selected variable for both datasets when compared with the $S_{0}$ criteria. Upward vertical winds at these height levels is typically associated with precipitation generation. The three catchments in the Southern Alpine climatic region (19, 20, 21) have a clear preference for Z (with the $S_{1}$ criterion) as the best single predictor from ERA-I, which is not so clear with CFSR. Heavy precipitation events in this region are mostly due to orographic effects related to sustained southerly advection of moist air masses \cite{Massacand1998}. Other regional clusters can be observed using ERA-I, such as the meridional wind V (with $S_{1}$) in the eastern part of Switzerland, STR(D) in northern Switzerland, and Z assessed in terms of its second derivative ($S_{2}$) for several catchments at similar latitudes. The second derivative of Z is also often selected for CFSR. The cloud water (CWAT) from CFSR is often selected but is not directly provided by ERA-I. A general discussion on the meteorological processes is given in Sect. \ref{discussion_meteo}.
+Figures \ref{fig_best_era_int} and \ref{fig_best_cfsr} also show that the variable selection can change from one region to another. Figure \ref{fig_map_variables} illustrates this information spatially for ERA-I variables. In terms of similarities, the vertical velocity (W) at 700 and 800~hPa is the most frequently selected variable for both datasets when compared with the $S_{0}$ criteria. Upward vertical winds at these height levels is typically associated with precipitation generation. The three catchments in the Southern Alpine climatic region (19, 20, 21) have a clear preference for Z (with the $S_{1}$ criterion) as the best single predictor from ERA-I, which is not so clear with CFSR. Heavy precipitation events in this region are mostly due to orographic effects related to sustained southerly advection of moist air masses \cite{Massacand1998}. Other regional clusters can be observed using ERA-I, such as the meridional wind V (with $S_{1}$) in the eastern part of Switzerland, STR(D) (surface net thermal radiation and surface thermal radiation downwards) in northern Switzerland, and Z assessed in terms of its second derivative ($S_{2}$) for several catchments at similar latitudes. The second derivative of Z is also often selected for CFSR. The cloud water (CWAT) from CFSR is often selected but is not directly provided by ERA-I. A general discussion on the meteorological processes is given in Sect. \ref{discussion_meteo}.
 
 
 \subsection{Assessment of AM Structures}
@@ -623,14 +609,7 @@ Because of the issue with the cumulated radiation variables and other issues wit
 The variables that resulted as relevant with ERA-I were selected as potential predictors, thus decreasing the pool of potential variables. Also, potential temperature levels and PV levels were not considered further. However, cloud cover variables have been added to the potential predictors to assess if SSRD perhaps served as a proxy for cloud cover.
 
 
-\todo[inline]{add results when ready...}
-
-
-
 \subsubsection{Proposing an homogenized method}
-
-
-\todo[inline]{try to build 1 common AM for all catchments (same predictors, different weights)}
 
 
 \subsection{Skill scores}
@@ -649,13 +628,10 @@ To assess the relevance of the methods optimized in this work, they have been co
 One can see in Fig. \ref{fig_scores} that the selection of a single best variable (GAs 1) already achieves better results than the 2Z method. Obviously, the performance provided by a single variable remains lower than the more complex AMs. The optmized methods perform significantly better when considering more variables than the reference methods, particularly the GAs 1~x~8 and GAs 1~x~12. Thus, despite having a single level of analogy, they outperform complex stepwise AMs. The selection of the predictor variables and the analogy criteria by GAs, along with all other parameters, provide AMs that prove to be relevant also on the validation period.
 
 
-\todo[inline]{Add new results when ready}
-\todo[inline]{Also assess on the test period}
-
-
 
 \section{Discussion}
 \label{discussion}
+
 
 \subsection{Transferability of the results}
 \label{discussion_S0}
@@ -677,19 +653,17 @@ We then considered the reference method 2Z-2MI and performed a classic calibrati
 
 It seems thus that the asymmetrical properties of $S_{0}$, $S_{1}$, and $S_{2}$ are beneficial for the prediction. Analog situations are best considered a bit stronger than weaker while being close to the target situation. The CRPS is mainly sensitive to high precipitation values, even more, when the precipitation is not transformed \cite<see>[for precipitation transformation]{Bontron2004}. Thus, one hypothesis is that large precipitation events being underrepresented in the archive, AMs are better off selecting stronger fields, often associated with higher precipitation, such as with W. It might then play a role of bias compensation for underrepresented high precipitation events. The reason for such behavior should be investigated further.
 
-\todo[]{What do you think might be the reason?}
 
 
 \subsection{Meteorological processes behind the selected variables}
 \label{discussion_meteo}
 
-\todo[inline]{Waiting for the final results...}
 
 
 \section{Conclusions}
 \label{conclusions}
 
-\todo[inline]{To be written...}
+
 
 \begin{itemize}
 	\item Variables selected
@@ -832,7 +806,19 @@ The benchmark (Fig. \ref{cuda}) shows that the GPU calculations are systematical
 
 \section{Performance of the mutation operators}
 
-Figure \ref{fig_mutation_operators_perfs} shows the performance of the five mutation operators (Sect. \ref{gas}) for different AM structures and the different catchments considered in Sect. \ref{structures}. Overall, the chromosome of adaptive search radius has a success rate of 76.25\% in calibration and 62.5\% in validation, the multiscale mutation 7.5\%, and 8.75\% respectively, and the non-uniform mutation with its different options: (3) 11.25\% and 10\%, (4) 11.25\% and 21.25\%, and (5) 1.25\% and 2.5\% respectively.
+As suggested in \citeA{Horton2017a}, five variants of the mutation operator were used in parallel optimizations:
+
+\begin{enumerate}
+	\item Chromosome of adaptive search radius \cite{Horton2017a}
+	\item Multiscale mutation \cite{Horton2017a}
+	\item Non-uniform mutation ($p_{mut}$=0.1, $G_{m,r}$=50, $w$=0.1)
+	\item Non-uniform mutation ($p_{mut}$=0.1, $G_{m,r}$=100, $w$=0.1)
+	\item Non-uniform mutation ($p_{mut}$=0.2, $G_{m,r}$=100, $w$=0.1)
+\end{enumerate}
+
+where $p_{mut}$ is the mutation probability, $G_{m,r}$ is the maximum number of generations (G) during which the magnitude of the research varies and $w$ is a chosen threshold to maintain a minimum search magnitude when $G>G_{m,r}$.
+
+Figure \ref{fig_mutation_operators_perfs} shows the performance of these five mutation operators for different AM structures and the different catchments considered in Sect. \ref{structures}. Overall, the chromosome of adaptive search radius has a success rate of 76.25\% in calibration and 62.5\% in validation, the multiscale mutation 7.5\%, and 8.75\% respectively, and the non-uniform mutation with its different options: (3) 11.25\% and 10\%, (4) 11.25\% and 21.25\%, and (5) 1.25\% and 2.5\% respectively.
 
 \begin{figure}[hbt]
 	\noindent\makebox[\textwidth]{
